@@ -2,6 +2,7 @@ package net.yotvoo.asterd.app;
 
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.shape.Shape;
 
 /**
  * @author
@@ -54,6 +55,10 @@ public class GameObject {
         ageStart = System.currentTimeMillis();
     }
 
+    public GameObject() {
+        ageStart = System.currentTimeMillis();
+    }
+
     public void update() {
         view.setTranslateX(view.getTranslateX() + velocity.getX());
         view.setTranslateY(view.getTranslateY() + velocity.getY());
@@ -81,6 +86,10 @@ public class GameObject {
 
     public Node getView() {
         return view;
+    }
+
+    public void setView(Node node) {
+        view = node;
     }
 
     public boolean isAlive() {
@@ -126,5 +135,6 @@ public class GameObject {
 
     public boolean isColliding(GameObject other) {
         return getView().getBoundsInParent().intersects(other.getView().getBoundsInParent());
+        //return (Shape.intersect( view, other) != null);
     }
 }

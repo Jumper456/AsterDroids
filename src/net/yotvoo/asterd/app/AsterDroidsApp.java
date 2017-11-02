@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -20,6 +21,8 @@ import java.util.List;
  * @author
  */
 public class AsterDroidsApp extends Application {
+
+    private Sound sound;
 
     private Pane root;
 
@@ -36,8 +39,12 @@ public class AsterDroidsApp extends Application {
     private Label gameStatusLabel;
 
     private Parent createContent() {
+
+        sound = new Sound();
+
         root = new Pane();
         root.setPrefSize(1200, 800);
+        root.setStyle("-fx-background-color: #000000;");
 
         gameScoreLabel = new Label();
         gameScoreLabel.setStyle("-fx-font-size: 20px;\n" +
@@ -47,6 +54,7 @@ public class AsterDroidsApp extends Application {
 
         gameScoreLabel.setTranslateX(20);
         gameScoreLabel.setTranslateY(20);
+        gameScoreLabel.setTranslateZ(100 );
         root.getChildren().add(gameScoreLabel);
 
         gameStatusLabel = new Label();
@@ -57,6 +65,7 @@ public class AsterDroidsApp extends Application {
 
         gameStatusLabel.setTranslateX(500);
         gameStatusLabel.setTranslateY(400);
+        gameStatusLabel.setTranslateZ(100);
         root.getChildren().add(gameStatusLabel);
 
 
@@ -127,23 +136,30 @@ public class AsterDroidsApp extends Application {
     private void onUpdate() {
         if (gameActive) {
             checkBulletsCollissions();
-            checkPlayerCollission();
+
 
             bullets.removeIf(GameObject::isDead);
             enemies.removeIf(GameObject::isDead);
+
+            checkPlayerCollission();
 
             bullets.forEach(GameObject::update);
             enemies.forEach(GameObject::update);
 
             player.update();
 
+
             gameScoreLabel.setText("Score: " + gameScore);
+
 
             if (Math.random() < 0.02) {
                 Enemy enemy = new Enemy();
                 enemy.setVelocity(new Point2D(Math.random(), Math.random()));
                 addEnemy(enemy, Math.random() * root.getWidth(), Math.random() * root.getHeight());
             }
+
+
+
         }
     }
 
@@ -152,20 +168,35 @@ public class AsterDroidsApp extends Application {
     };
 
     private static class Player extends GameObject {
+
         Player() {
-            super(new Rectangle(40, 20, Color.BLUE));
+            super();
+/*
+            Rectangle ship = new Rectangle(40, 20, Color.BLUE);
+            ship.setArcWidth(10);
+            ship.setArcHeight(10);
+*/
+            Polygon ship = new Polygon();
+            ship.getPoints().addAll(new Double[]{-30d,-10d,
+                                                0d,0d,
+                                                -30d,10d});
+
+            ship.setFill(Color.BLUEVIOLET);
+            super.setView(ship);
+
+
         }
     }
 
     private static class Enemy extends GameObject {
         Enemy() {
-            super(new Circle(15, 15, 15, Color.RED));
+            super(new Circle(15, 15, 15, Color.DARKGOLDENROD));
         }
     }
 
     private static class Bullet extends GameObject {
         Bullet() {
-            super(new Circle(5, 5, 5, Color.BROWN));
+            super(new Circle(5, 5, 5, Color.CADETBLUE));
         }
     }
 
@@ -183,8 +214,11 @@ public class AsterDroidsApp extends Application {
                 Bullet bullet = new Bullet();
                 bullet.setVelocity(player.getOrientation().normalize().multiply(5));
                 addBullet(bullet, player.getView().getTranslateX(), player.getView().getTranslateY());
+                sound.playShooting();
             }
         });
+        stage.setTitle("AsterDroids");
+        stage.setResizable(false);
         stage.show();
     }
 
