@@ -28,8 +28,12 @@ public class AsterDroidsApp extends Application {
 
     private GameObject player;
 
+    private boolean gameActive = true;
+
     private Label gameScoreLabel;
     private long gameScore = 0;
+
+    private Label gameStatusLabel;
 
     private Parent createContent() {
         root = new Pane();
@@ -44,6 +48,16 @@ public class AsterDroidsApp extends Application {
         gameScoreLabel.setTranslateX(20);
         gameScoreLabel.setTranslateY(20);
         root.getChildren().add(gameScoreLabel);
+
+        gameStatusLabel = new Label();
+        gameStatusLabel.setStyle("-fx-font-size: 100px;\n" +
+                "    -fx-font-weight: bold;\n" +
+                "    -fx-text-fill: #333333;\n" +
+                "    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );");
+
+        gameStatusLabel.setTranslateX(500);
+        gameStatusLabel.setTranslateY(400);
+        root.getChildren().add(gameStatusLabel);
 
 
         player = new Player();
@@ -77,9 +91,9 @@ public class AsterDroidsApp extends Application {
         root.getChildren().add(object.getView());
     }
 
-    private void onUpdate() {
+    private void checkBulletsCollissions() {
         for (GameObject bullet : bullets) {
-            if (bullet.isTooOld()){
+            if (bullet.isTooOld()) {
                 bullet.setAlive(false);
                 root.getChildren().remove(bullet.getView());
             } else {
@@ -93,24 +107,49 @@ public class AsterDroidsApp extends Application {
                     }
                 }
             }
-        }
 
-        bullets.removeIf(GameObject::isDead);
-        enemies.removeIf(GameObject::isDead);
-
-        bullets.forEach(GameObject::update);
-        enemies.forEach(GameObject::update);
-
-        player.update();
-
-        gameScoreLabel.setText("Score: " + gameScore);
-
-        if (Math.random() < 0.02) {
-            Enemy enemy = new Enemy();
-            enemy.setVelocity(new Point2D(Math.random(),Math.random()));
-            addEnemy( enemy , Math.random() * root.getWidth(), Math.random() * root.getHeight());
         }
     }
+
+    private void gameOver(){
+        gameStatusLabel.setText("Game Over");
+        gameActive = false;
+    }
+
+    private void checkPlayerCollission() {
+        for (GameObject enemy : enemies) {
+            if (enemy.isColliding(player)) {
+                gameOver();
+            }
+        }
+    }
+
+    private void onUpdate() {
+        if (gameActive) {
+            checkBulletsCollissions();
+            checkPlayerCollission();
+
+            bullets.removeIf(GameObject::isDead);
+            enemies.removeIf(GameObject::isDead);
+
+            bullets.forEach(GameObject::update);
+            enemies.forEach(GameObject::update);
+
+            player.update();
+
+            gameScoreLabel.setText("Score: " + gameScore);
+
+            if (Math.random() < 0.02) {
+                Enemy enemy = new Enemy();
+                enemy.setVelocity(new Point2D(Math.random(), Math.random()));
+                addEnemy(enemy, Math.random() * root.getWidth(), Math.random() * root.getHeight());
+            }
+        }
+    }
+
+    private void newGame(){
+
+    };
 
     private static class Player extends GameObject {
         Player() {
