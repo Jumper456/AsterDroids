@@ -214,19 +214,24 @@ public class AsterDroidsApp extends Application {
 
     private void startKeyHandling(Scene scene){
         scene.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.F5) {
-                if (!isGameActive) newGame();
-            } else if (e.getCode() == KeyCode.LEFT) {
-                player.rotateLeft();
-            } else if (e.getCode() == KeyCode.RIGHT) {
-                player.rotateRight();
-            } else if (e.getCode() == KeyCode.UP) {
-                player.accelerate();
-            } else if (e.getCode() == KeyCode.SPACE) {
-                Bullet bullet = new Bullet();
-                bullet.setVelocity(player.getOrientation().normalize().multiply(5));
-                addBullet(bullet, player.getView().getTranslateX(), player.getView().getTranslateY());
-                sound.playShooting();
+            if (!isGameActive){
+                if (e.getCode() == KeyCode.F5) {
+                    newGame();
+                }
+            }
+            else {
+                if (e.getCode() == KeyCode.LEFT) {
+                    player.rotateLeft();
+                } else if (e.getCode() == KeyCode.RIGHT) {
+                    player.rotateRight();
+                } else if (e.getCode() == KeyCode.UP) {
+                    player.accelerate();
+                } else if (e.getCode() == KeyCode.SPACE) {
+                    Bullet bullet = new Bullet();
+                    bullet.setVelocity(player.getOrientation().normalize().multiply(5));
+                    addBullet(bullet, player.getView().getTranslateX(), player.getView().getTranslateY());
+                    sound.playShooting();
+                }
             }
         });
 

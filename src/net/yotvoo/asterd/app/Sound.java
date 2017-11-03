@@ -22,10 +22,10 @@ public class Sound {
             String musicFile = pathToSounds + "julien_matthey_science_fiction_laser_002.mp3";     // For example
             soundShooting = new Media(new File(musicFile).toURI().toString());
 
-            musicFile = pathToSounds + "explosion_internal_loud_bang_blow_up_safe.mp3";     // For example
+            musicFile = pathToSounds + "Blastwave_FX_GrenadeExplosion_S08WA.229.mp3";     // For example
             soundAsteroidExplosion = new Media(new File(musicFile).toURI().toString());
 
-            musicFile = pathToSounds + "Blastwave_FX_GrenadeExplosion_S08WA.229.mp3";     // For example
+            musicFile = pathToSounds + "explosion_internal_loud_bang_blow_up_safe.mp3";     // For example
             soundPlayerCrash = new Media(new File(musicFile).toURI().toString());
         } catch (Exception e) {
             AsterDroidsApp.log("Problem podczas ładowania dźwięków");
