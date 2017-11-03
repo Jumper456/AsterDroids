@@ -22,6 +22,8 @@ import java.util.List;
  */
 public class AsterDroidsApp extends Application {
 
+
+
     private Sound sound;
 
     private Pane root;
@@ -37,6 +39,10 @@ public class AsterDroidsApp extends Application {
     private long gameScore = 0;
 
     private Label gameStatusLabel;
+
+    public static void log(String string){
+        System.out.println(string);
+    };
 
     private Parent createContent() {
 
@@ -58,12 +64,12 @@ public class AsterDroidsApp extends Application {
         root.getChildren().add(gameScoreLabel);
 
         gameStatusLabel = new Label();
-        gameStatusLabel.setStyle("-fx-font-size: 100px;\n" +
+        gameStatusLabel.setStyle("-fx-font-size: 90px;\n" +
                 "    -fx-font-weight: bold;\n" +
                 "    -fx-text-fill: #333333;\n" +
                 "    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );");
 
-        gameStatusLabel.setTranslateX(500);
+        gameStatusLabel.setTranslateX(100);
         gameStatusLabel.setTranslateY(400);
         gameStatusLabel.setTranslateZ(100);
         root.getChildren().add(gameStatusLabel);
@@ -124,7 +130,7 @@ public class AsterDroidsApp extends Application {
 
     private void gameOver(){
         sound.playPlayerCrash();
-        gameStatusLabel.setText("Game Over");
+        gameStatusLabel.setText("Game Over F1 nowa gra");
         gameActive = false;
     }
 
