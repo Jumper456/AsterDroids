@@ -108,6 +108,8 @@ public class AsterDroidsApp extends Application {
             } else {
                 for (GameObject enemy : enemies) {
                     if (bullet.isColliding(enemy)) {
+
+                        sound.playAsteroidExplosion();
                         bullet.setAlive(false);
                         enemy.setAlive(false);
 
@@ -121,6 +123,7 @@ public class AsterDroidsApp extends Application {
     }
 
     private void gameOver(){
+        sound.playPlayerCrash();
         gameStatusLabel.setText("Game Over");
         gameActive = false;
     }
