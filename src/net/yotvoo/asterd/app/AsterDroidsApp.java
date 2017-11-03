@@ -10,7 +10,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
 
@@ -33,7 +32,7 @@ public class AsterDroidsApp extends Application {
 
     private GameObject player;
 
-    private boolean gameActive = true;
+    private boolean isGameActive = true;
 
     private Label gameScoreLabel;
     private long gameScore = 0;
@@ -44,14 +43,14 @@ public class AsterDroidsApp extends Application {
         System.out.println(string);
     };
 
-    private Parent createContent() {
+    private void createPlayer(){
+        player = new Player();
+        player.setVelocity(new Point2D(1, 0));
+        addGameObject(player, 300, 300);
 
-        sound = new Sound();
+    }
 
-        root = new Pane();
-        root.setPrefSize(1200, 800);
-        root.setStyle("-fx-background-color: #000000;");
-
+    private void createContent(){
         gameScoreLabel = new Label();
         gameScoreLabel.setStyle("-fx-font-size: 20px;\n" +
                 "    -fx-font-weight: bold;\n" +
@@ -61,6 +60,7 @@ public class AsterDroidsApp extends Application {
         gameScoreLabel.setTranslateX(20);
         gameScoreLabel.setTranslateY(20);
         gameScoreLabel.setTranslateZ(100 );
+        gameScoreLabel.setText("Wynik na razie zero");
         root.getChildren().add(gameScoreLabel);
 
         gameStatusLabel = new Label();
@@ -74,18 +74,13 @@ public class AsterDroidsApp extends Application {
         gameStatusLabel.setTranslateZ(100);
         root.getChildren().add(gameStatusLabel);
 
+    };
 
-        player = new Player();
-        player.setVelocity(new Point2D(1, 0));
-        addGameObject(player, 300, 300);
+    private Parent createRoot() {
 
-        AnimationTimer timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                onUpdate();
-            }
-        };
-        timer.start();
+        root = new Pane();
+        root.setPrefSize(1200, 800);
+        root.setStyle("-fx-background-color: #000000;");
 
         return root;
     }
@@ -128,10 +123,21 @@ public class AsterDroidsApp extends Application {
         }
     }
 
+    private void newGame(){
+        root.getChildren().clear();
+        createContent();
+        enemies.clear();
+        bullets.clear();
+        player = null;
+        createPlayer();
+        isGameActive = true;
+
+    };
+
     private void gameOver(){
         sound.playPlayerCrash();
-        gameStatusLabel.setText("Game Over F1 nowa gra");
-        gameActive = false;
+        gameStatusLabel.setText("Game Over F5 nowa gra");
+        isGameActive = false;
     }
 
     private void checkPlayerCollission() {
@@ -143,7 +149,7 @@ public class AsterDroidsApp extends Application {
     }
 
     private void onUpdate() {
-        if (gameActive) {
+        if (isGameActive) {
             checkBulletsCollissions();
 
 
@@ -172,9 +178,6 @@ public class AsterDroidsApp extends Application {
         }
     }
 
-    private void newGame(){
-
-    };
 
     private static class Player extends GameObject {
 
@@ -209,11 +212,11 @@ public class AsterDroidsApp extends Application {
         }
     }
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        stage.setScene(new Scene(createContent()));
-        stage.getScene().setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.LEFT) {
+    private void startKeyHandling(Scene scene){
+        scene.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.F5) {
+                if (!isGameActive) newGame();
+            } else if (e.getCode() == KeyCode.LEFT) {
                 player.rotateLeft();
             } else if (e.getCode() == KeyCode.RIGHT) {
                 player.rotateRight();
@@ -226,9 +229,28 @@ public class AsterDroidsApp extends Application {
                 sound.playShooting();
             }
         });
+
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        isGameActive = false;
+        stage.setScene(new Scene(createRoot()));
+        createContent();
+        gameStatusLabel.setText("F5 nowa gra");
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                onUpdate();
+            }
+        };
+        timer.start();
+        startKeyHandling(stage.getScene());
         stage.setTitle("AsterDroids");
         stage.setResizable(false);
         stage.show();
+        sound = new Sound();
+
     }
 
     public static void main(String[] args) {
