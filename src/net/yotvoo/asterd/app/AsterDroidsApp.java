@@ -22,7 +22,6 @@ import java.util.List;
 public class AsterDroidsApp extends Application {
 
 
-
     private Sound sound;
 
     private Pane root;
@@ -38,6 +37,14 @@ public class AsterDroidsApp extends Application {
     private long gameScore = 0;
 
     private Label gameStatusLabel;
+
+    private static final double MAX_ENEMY_SIZE = 30;
+    private static final double MIN_ENEMY_SIZE = 2;
+    private static final double MAX_ENEMY_SPEED = 3;
+    private static final double MAX_ENEMY_PROXIMITY = 100;
+    private static final double MAX_ENEMY_COUNT = 30;
+    private static final double ENEMY_SPAWN_RATIO = 0.02;
+
 
     public static void log(String string){
         System.out.println(string);
@@ -124,6 +131,7 @@ public class AsterDroidsApp extends Application {
     }
 
     private void newGame(){
+        gameScore = 0;
         root.getChildren().clear();
         createContent();
         enemies.clear();
@@ -148,6 +156,34 @@ public class AsterDroidsApp extends Application {
         }
     }
 
+    private void addGameObjectWithProximityCheck(GameObject enemy){
+
+        double x,y;
+
+        x = Math.random() * root.getWidth();
+        y = Math.random() * root.getHeight();
+
+        if (Math.abs ( player.getView().getTranslateX() - x ) >= MAX_ENEMY_PROXIMITY) {
+            if (Math.abs ( player.getView().getTranslateY() - y ) >= MAX_ENEMY_PROXIMITY) {
+                addEnemy(enemy, x, y);
+            }
+        }
+    };
+
+    private void spawnEnemy(){
+        if (enemies.size() <= MAX_ENEMY_COUNT) {
+            if (Math.random() < ENEMY_SPAWN_RATIO) {
+                int size = (int) Math.floor(MAX_ENEMY_SIZE * Math.random());
+                if (size < MIN_ENEMY_SIZE) size = (int) MIN_ENEMY_SIZE;
+                Enemy enemy = new Enemy(size);
+                enemy.setVelocity(new Point2D((Math.random() - 0.5d) * MAX_ENEMY_SPEED,
+                        (Math.random() - 0.5d) * MAX_ENEMY_SPEED));
+                addGameObjectWithProximityCheck(enemy);
+
+            }
+        }
+    }
+
     private void onUpdate() {
         if (isGameActive) {
             checkBulletsCollissions();
@@ -165,16 +201,7 @@ public class AsterDroidsApp extends Application {
 
 
             gameScoreLabel.setText("Score: " + gameScore);
-
-
-            if (Math.random() < 0.02) {
-                Enemy enemy = new Enemy();
-                enemy.setVelocity(new Point2D(Math.random(), Math.random()));
-                addEnemy(enemy, Math.random() * root.getWidth(), Math.random() * root.getHeight());
-            }
-
-
-
+            spawnEnemy();
         }
     }
 
@@ -201,8 +228,8 @@ public class AsterDroidsApp extends Application {
     }
 
     private static class Enemy extends GameObject {
-        Enemy() {
-            super(new Circle(15, 15, 15, Color.DARKGOLDENROD));
+        Enemy(int size) {
+            super(new Circle(size, size, size, Color.DARKGOLDENROD));
         }
     }
 
