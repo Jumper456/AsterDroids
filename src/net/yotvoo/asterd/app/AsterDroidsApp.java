@@ -38,8 +38,8 @@ public class AsterDroidsApp extends Application {
 
     private Label gameStatusLabel;
 
-    private static final double MAX_ENEMY_SIZE = 50;
-    private static final double MIN_ENEMY_SIZE = 2;
+    private static final double MAX_ENEMY_SIZE = 40;
+    private static final double MIN_ENEMY_SIZE = 5;
     private static final double MAX_ENEMY_SPEED = 3;
     private static final double MAX_ENEMY_PROXIMITY = 100;
     private static final double MAX_ENEMY_COUNT = 30;

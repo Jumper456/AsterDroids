@@ -18,6 +18,7 @@ public class GameObject {
     private final Long MAX_BULLET_AGE = 1000L; // 1 sek
     private final double MAX_VELOCITY_MAGNITUDE = 6; //TODO nie mogę ograniczać prędkośi pocisków,
                                                         // trzeba osobno sterować prędkościami różnych elementów
+    private final double ROTATE_STEP = 10d;
 
     /**
      * @return object age in ms
@@ -109,12 +110,12 @@ public class GameObject {
     }
 
     public void rotateRight() {
-        view.setRotate(view.getRotate() + 5);
+        view.setRotate(view.getRotate() + ROTATE_STEP);
         //setVelocity(new Point2D(Math.cos(Math.toRadians(getRotate())), Math.sin(Math.toRadians(getRotate()))));
     }
 
     public void rotateLeft() {
-        view.setRotate(view.getRotate() - 5);
+        view.setRotate(view.getRotate() - ROTATE_STEP);
         //setVelocity(new Point2D(Math.cos(Math.toRadians(getRotate())), Math.sin(Math.toRadians(getRotate()))));
     }
 
@@ -134,8 +135,8 @@ public class GameObject {
     }
 
     public boolean isColliding(GameObject other) {
-        //return getView().getBoundsInParent().intersects(other.getView().getBoundsInParent());
+        return getView().getBoundsInParent().intersects(other.getView().getBoundsInParent());
         //return (Shape.intersect( view, other) != null);
-        return false;
+        //return false;
     }
 }
