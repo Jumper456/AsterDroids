@@ -13,6 +13,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -266,6 +267,15 @@ public class AsterDroidsApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+/*
+
+        String musicFile = "C:/Users/Jumper/IdeaProjects/AsterDroids/res/" + "explosion_internal_loud_bang_blow_up_safe.mp3";
+        URL url = getClass().getResource();
+        AsterDroidsApp.log(url.toString());
+        String uri = url.toURI().toString();
+        AsterDroidsApp.log(uri);
+
+*/
         isGameActive = false;
         stage.setScene(new Scene(createRoot()));
         createContent();
