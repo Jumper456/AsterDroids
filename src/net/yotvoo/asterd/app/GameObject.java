@@ -134,7 +134,8 @@ public class GameObject {
     }
 
     public boolean isColliding(GameObject other) {
-        return getView().getBoundsInParent().intersects(other.getView().getBoundsInParent());
+        //return getView().getBoundsInParent().intersects(other.getView().getBoundsInParent());
         //return (Shape.intersect( view, other) != null);
+        return false;
     }
 }

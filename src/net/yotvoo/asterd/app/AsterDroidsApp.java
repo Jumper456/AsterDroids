@@ -9,8 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Polygon;
+import javafx.scene.shape.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -39,7 +38,7 @@ public class AsterDroidsApp extends Application {
 
     private Label gameStatusLabel;
 
-    private static final double MAX_ENEMY_SIZE = 30;
+    private static final double MAX_ENEMY_SIZE = 50;
     private static final double MIN_ENEMY_SIZE = 2;
     private static final double MAX_ENEMY_SPEED = 3;
     private static final double MAX_ENEMY_PROXIMITY = 100;
@@ -149,12 +148,22 @@ public class AsterDroidsApp extends Application {
         isGameActive = false;
     }
 
+
+    private void drawCollision(Shape shape1 , Shape shape2){
+        Shape path = Path.intersect(shape1, shape2);
+        path.setFill(Color.RED);
+        root.getChildren().addAll(path);
+    }
+
     private void checkPlayerCollission() {
         for (GameObject enemy : enemies) {
             if (enemy.isColliding(player)) {
                 gameOver();
             }
         }
+
+
+
     }
 
     private void addGameObjectWithProximityCheck(GameObject enemy){
@@ -228,10 +237,40 @@ public class AsterDroidsApp extends Application {
         }
     }
 
+
+    private static Double[] generateRandomPolygon(Double baseSize, int vertexCount){
+
+        Double  elements[] = new Double[vertexCount*2];
+
+        for (int i = 0; i < vertexCount * 2; i++){
+            elements[i] = Math.random() * baseSize;
+        }
+
+        return elements;
+    }
+
     private static class Enemy extends GameObject {
+/*
         Enemy(int size) {
             super(new Circle(size, size, size, Color.DARKGOLDENROD));
         }
+*/
+        Enemy(int size) {
+            super(new Rectangle( size, size, Color.DARKGOLDENROD));
+        }
+/*        Enemy(int size) {
+
+
+            super();
+            Polygon polygon = new Polygon();
+            //polygon.getPoints().addAll(new Double[]{-30d, -10d, 0d, 0d, -30d, 10d, -20d, -10d});
+            polygon.getPoints().addAll(generateRandomPolygon(MAX_ENEMY_SIZE, 5));
+            polygon.setFill(Color.DARKGOLDENROD);
+            super.setView(polygon);
+        }
+*/
+
+
     }
 
     private static class Bullet extends GameObject {
