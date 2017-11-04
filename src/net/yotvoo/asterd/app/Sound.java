@@ -13,7 +13,7 @@ public class Sound {
     private Media soundAsteroidExplosion;
     private Media soundPlayerCrash;
 
-    private String pathToSounds = "res/";
+    private String pathToSounds = "";
     //private String pathToSounds = ".\\\\res\\\\";
     // "C:\\\\Users\\\\Jumper\\\\Downloads\\\\Sounds\\\\";
 
@@ -23,25 +23,29 @@ public class Sound {
 
 
         try {
-            String musicFile = pathToSounds + "julien_matthey_science_fiction_laser_002.mp3";     // For example
-/*
-            AsterDroidsApp.log("musicFile: " + musicFile);
-            //soundShooting = new Media(new File(musicFile).toURI().toString());
-            String uri = "";
-            URL url = getClass().getResource(musicFile);
-            uri = url.toURI().toString();
-            AsterDroidsApp.log(uri);
-            soundShooting = new Media (uri);
-*/
+//            String musicFile = pathToSounds + "laser_gun.mp3";
+//            //String musicFile =  "LICENSE";
+//            AsterDroidsApp.log("musicFile: " + musicFile);
+//            //soundShooting = new Media(new File(musicFile).toURI().toString());
+//            String uri = "";
+//            URL url = getClass().getResource(musicFile);
+//            uri = url.toURI().toString();
+//            AsterDroidsApp.log(uri);
+//            soundShooting = new Media (uri);
 
-            musicFile = pathToSounds + "laser_gun.mp3";     // For example
-            soundShooting = new Media(new File(musicFile).toURI().toString());
+            soundShooting = new Media(getClass().getResource("laser_gun.mp3").toURI().toString());
+            soundAsteroidExplosion = new Media(getClass().getResource("boom_bang.mp3").toURI().toString());
+            soundPlayerCrash = new Media(getClass().getResource("boom_grenade.mp3").toURI().toString());
 
-            musicFile = pathToSounds + "boom_bang.mp3";     // For example
-            soundAsteroidExplosion = new Media(new File(musicFile).toURI().toString());
 
-            musicFile = pathToSounds + "boom_grenade.mp3";     // For example
-            soundPlayerCrash = new Media(new File(musicFile).toURI().toString());
+//            musicFile = pathToSounds + "laser_gun.mp3";     // For example
+//            soundShooting = new Media(new File(musicFile).toURI().toString());
+
+//            musicFile = pathToSounds + "boom_bang.mp3";     // For example
+//            soundAsteroidExplosion = new Media(new File(musicFile).toURI().toString());
+//
+//            musicFile = pathToSounds + "boom_grenade.mp3";     // For example
+//            soundPlayerCrash = new Media(new File(musicFile).toURI().toString());
 
 
 
