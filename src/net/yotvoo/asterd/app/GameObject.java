@@ -1,7 +1,7 @@
 package net.yotvoo.asterd.app;
 
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
+//import javafx.scene.Node;
 import javafx.scene.shape.Shape;
 
 /**
@@ -11,7 +11,7 @@ import javafx.scene.shape.Shape;
 public class GameObject {
 
     final Double ACCELERATION = 0.3d;
-    private Node view;
+    private Shape view;
     private Point2D velocity = new Point2D(0, 0);
     //private Point2D orientation = new Point2D(0,0);
     private Long ageStart;
@@ -51,7 +51,7 @@ public class GameObject {
 
     private boolean alive = true;
 
-    public GameObject(Node view) {
+    public GameObject(Shape view) {
         this.view = view;
         ageStart = System.currentTimeMillis();
     }
@@ -85,12 +85,12 @@ public class GameObject {
         return velocity;
     }
 
-    public Node getView() {
+    public Shape getView() {
         return view;
     }
 
-    public void setView(Node node) {
-        view = node;
+    public void setView(Shape shape) {
+        view = shape;
     }
 
     public boolean isAlive() {
@@ -135,8 +135,25 @@ public class GameObject {
     }
 
     public boolean isColliding(GameObject other) {
-        return getView().getBoundsInParent().intersects(other.getView().getBoundsInParent());
-        //return (Shape.intersect( view, other) != null);
+
+        //simple checking of probably rectangle bounds, not to exact
+        //return getView().getBoundsInParent().intersects(other.getView().getBoundsInParent());
+        try {
+            return (Shape.intersect( view, other.getView()).getBoundsInLocal().getWidth() != -1);
+        } catch ( Exception e) {
+            AsterDroidsApp.log("Problem w czasie sprawdzania intersekcji Shapów: " + e.toString());
+            return false;
+        }
+
         //return false;
+
+/*  does not work for the javafx as Area is from AWT
+        Area areaA = new Area(getView());
+        areaA.intersect(new Area(other.getView()));
+        return !areaA.isEmpty();
+*/
+
+
+
     }
 }

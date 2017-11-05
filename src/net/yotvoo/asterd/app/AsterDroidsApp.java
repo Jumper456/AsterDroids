@@ -181,37 +181,47 @@ public class AsterDroidsApp extends Application {
     };
 
     private void spawnEnemy(){
-        if (enemies.size() <= MAX_ENEMY_COUNT) {
-            if (Math.random() < ENEMY_SPAWN_RATIO) {
-                int size = (int) Math.floor(MAX_ENEMY_SIZE * Math.random());
-                if (size < MIN_ENEMY_SIZE) size = (int) MIN_ENEMY_SIZE;
-                Enemy enemy = new Enemy(size);
-                enemy.setVelocity(new Point2D((Math.random() - 0.5d) * MAX_ENEMY_SPEED,
-                        (Math.random() - 0.5d) * MAX_ENEMY_SPEED));
-                addGameObjectWithProximityCheck(enemy);
+        try {
+            if (enemies.size() <= MAX_ENEMY_COUNT) {
+                if (Math.random() < ENEMY_SPAWN_RATIO) {
+                    int size = (int) Math.floor(MAX_ENEMY_SIZE * Math.random());
+                    if (size < MIN_ENEMY_SIZE) size = (int) MIN_ENEMY_SIZE;
+                    Enemy enemy = new Enemy(size);
+                    enemy.setVelocity(new Point2D((Math.random() - 0.5d) * MAX_ENEMY_SPEED,
+                            (Math.random() - 0.5d) * MAX_ENEMY_SPEED));
+                    addGameObjectWithProximityCheck(enemy);
 
+                }
             }
+        } catch (Exception e){
+            log("Problem w spawnEnemy " + e.toString());
         }
     }
 
     private void onUpdate() {
         if (isGameActive) {
-            checkBulletsCollissions();
+            try {
 
 
-            bullets.removeIf(GameObject::isDead);
-            enemies.removeIf(GameObject::isDead);
-
-            checkPlayerCollission();
-
-            bullets.forEach(GameObject::update);
-            enemies.forEach(GameObject::update);
-
-            player.update();
+                checkBulletsCollissions();
 
 
-            gameScoreLabel.setText("Score: " + gameScore);
-            spawnEnemy();
+                bullets.removeIf(GameObject::isDead);
+                enemies.removeIf(GameObject::isDead);
+
+                checkPlayerCollission();
+
+                bullets.forEach(GameObject::update);
+                enemies.forEach(GameObject::update);
+
+                player.update();
+
+
+                gameScoreLabel.setText("Score: " + gameScore);
+                spawnEnemy();
+            } catch (Exception e){
+                log("Problem w onUpdate " + e.toString());
+            }
         }
     }
 
