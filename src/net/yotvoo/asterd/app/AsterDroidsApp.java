@@ -45,6 +45,9 @@ public class AsterDroidsApp extends Application {
     private static final double MAX_ENEMY_COUNT = 30;
     private static final double ENEMY_SPAWN_RATIO = 0.02;
 
+    private static final double BULLETS_INTERVAL = 200d;
+    private double lastBulletTimeMS = 0;
+
 
     public static void log(String string){
         System.out.println(string);
@@ -315,6 +318,22 @@ public class AsterDroidsApp extends Application {
         }
     }
 
+
+    /**
+     * Conditionally shoots a bullet, i.e. creates a bullet with correct velocity if
+     * there are conditions the shot should be made
+     */
+    private void shootABullet(){
+
+        if ((lastBulletTimeMS + BULLETS_INTERVAL) < System.currentTimeMillis()) {
+            lastBulletTimeMS = System.currentTimeMillis();
+            Bullet bullet = new Bullet();
+            bullet.setVelocity(player.getOrientation().normalize().multiply(5));
+            addBullet(bullet, player.getView().getTranslateX(), player.getView().getTranslateY());
+            sound.playShooting();
+        }
+    }
+
     private void startKeyHandling(Scene scene){
         scene.setOnKeyPressed(e -> {
             if (!isGameActive){
@@ -330,10 +349,7 @@ public class AsterDroidsApp extends Application {
                 } else if (e.getCode() == KeyCode.UP) {
                     player.accelerate();
                 } else if (e.getCode() == KeyCode.SPACE) {
-                    Bullet bullet = new Bullet();
-                    bullet.setVelocity(player.getOrientation().normalize().multiply(5));
-                    addBullet(bullet, player.getView().getTranslateX(), player.getView().getTranslateY());
-                    sound.playShooting();
+                    shootABullet();
                 }
             }
         });
