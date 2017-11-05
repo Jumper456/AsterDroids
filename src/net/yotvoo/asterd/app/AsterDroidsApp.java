@@ -260,26 +260,52 @@ public class AsterDroidsApp extends Application {
     }
 
     private static class Enemy extends GameObject {
-/*
-        Enemy(int size) {
-            super(new Circle(size, size, size, Color.DARKGOLDENROD));
-        }
-*/
-        Enemy(int size) {
-            super(new Rectangle( size, size, Color.DARKGOLDENROD));
-        }
-/*        Enemy(int size) {
 
-
-            super();
+        private Shape preparePolyAsteroid(double size, int vertexCount){
             Polygon polygon = new Polygon();
             //polygon.getPoints().addAll(new Double[]{-30d, -10d, 0d, 0d, -30d, 10d, -20d, -10d});
-            polygon.getPoints().addAll(generateRandomPolygon(MAX_ENEMY_SIZE, 5));
+            polygon.getPoints().addAll(generateRandomPolygon((double)size, vertexCount));
             polygon.setFill(Color.DARKGOLDENROD);
-            super.setView(polygon);
+            return polygon;
         }
-*/
 
+        private double getRandomSize(double maxSize){
+            double size = maxSize * Math.random();
+            if (size < MIN_ENEMY_SIZE) size = MIN_ENEMY_SIZE;
+            return size;
+        }
+
+        private Shape prepareCircleAsteroid(double size) {
+            return  new Circle(0, 0, getRandomSize(MAX_ENEMY_SIZE), Color.DARKGOLDENROD);
+        }
+
+
+        private Shape prepareRectangleAsteroid(double size) {
+            return  new Rectangle( getRandomSize(MAX_ENEMY_SIZE), getRandomSize(MAX_ENEMY_SIZE), Color.DARKGOLDENROD);
+        }
+
+        Enemy(int size) {
+            super();
+            double random = Math.random();
+            if (random < 0.3d) {
+                Shape shape = preparePolyAsteroid(MAX_ENEMY_SIZE ,5);
+                super.setView(shape);
+            }
+            else if (random < 0.6d) {
+                Shape shape = prepareCircleAsteroid(MAX_ENEMY_SIZE );
+                super.setView(shape);
+            }
+            else if (random < 0.9d) {
+                Shape shape = prepareRectangleAsteroid(MAX_ENEMY_SIZE );
+                super.setView(shape);
+
+            }
+            else {
+                Shape shape = preparePolyAsteroid(MAX_ENEMY_SIZE * 2,8);
+                super.setView(shape);
+
+            }
+        }
 
     }
 
