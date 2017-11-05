@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.stage.Stage;
+import org.w3c.dom.css.RGBColor;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -45,6 +46,9 @@ public class AsterDroidsApp extends Application {
     private static final double MAX_ENEMY_COUNT = 30;
     private static final double ENEMY_SPAWN_RATIO = 0.02;
 
+    private static final double MAX_STAR_SIZE = 4;
+    private static final int STARS_NUMBER = 500;
+
     private static final double BULLETS_INTERVAL = 200d;
     private double lastBulletTimeMS = 0;
 
@@ -58,6 +62,21 @@ public class AsterDroidsApp extends Application {
         player.setVelocity(new Point2D(1, 0));
         addGameObject(player, 300, 300);
 
+    }
+
+    private Shape createStar(double maxSize, int x, int y){
+        Shape star = new Circle(x,y,maxSize/2, Color.DARKGRAY);
+        return star;
+    }
+
+    private void createStarfield(int starsNumber, double maxSize){
+        for (int i = 0; i < starsNumber; i++){
+            int x = (int) Math.floor( root.getWidth() * Math.random());
+            int y = (int) Math.floor(  root.getHeight() * Math.random());
+            double size = MAX_STAR_SIZE * Math.random();
+            if (size < 1) size = 1;
+            root.getChildren().add(createStar( size, x, y ));
+        }
     }
 
     private void createContent(){
@@ -83,6 +102,7 @@ public class AsterDroidsApp extends Application {
         gameStatusLabel.setTranslateY(400);
         gameStatusLabel.setTranslateZ(100);
         root.getChildren().add(gameStatusLabel);
+        createStarfield(STARS_NUMBER, MAX_STAR_SIZE);
 
     };
 
