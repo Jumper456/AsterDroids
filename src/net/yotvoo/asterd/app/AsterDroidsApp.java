@@ -11,9 +11,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.stage.Stage;
-import org.w3c.dom.css.RGBColor;
-
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,9 +31,12 @@ public class AsterDroidsApp extends Application {
 
     private boolean isGameActive = true;
 
-    private Label gameScoreLabel;
     private long gameScore = 0;
+    private long gameHiScore = 0;
 
+
+    private Label gameScoreLabel;
+    private Label gameHiScoreLabel;
     private Label gameStatusLabel;
 
     private static final double MAX_ENEMY_SIZE = 40;
@@ -49,8 +49,9 @@ public class AsterDroidsApp extends Application {
     private static final double MAX_STAR_SIZE = 4;
     private static final int STARS_NUMBER = 500;
 
-    private static final double BULLETS_INTERVAL = 200d;
+    private static final double BULLETS_INTERVAL = 400d;
     private double lastBulletTimeMS = 0;
+
 
 
     public static void log(String string){
@@ -79,32 +80,43 @@ public class AsterDroidsApp extends Application {
         }
     }
 
+    private void styleAndPlaceLabel(Label label,int x, int y, int fontSize){
+
+        label.setStyle("-fx-font-size: " + fontSize + "px;\n" +
+                "    -fx-font-weight: bold;\n" +
+                "    -fx-text-fill: #333333;\n" +
+                "    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );");
+
+        label.setTranslateX(x);
+        label.setTranslateY(y);
+        //label.setTranslateZ(100 );
+        //gameScoreLabel.setText("Wynik na razie zero");
+        root.getChildren().add(label);
+
+    }
+
     private void createContent(){
         gameScoreLabel = new Label();
-        gameScoreLabel.setStyle("-fx-font-size: 20px;\n" +
-                "    -fx-font-weight: bold;\n" +
-                "    -fx-text-fill: #333333;\n" +
-                "    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );");
-
-        gameScoreLabel.setTranslateX(20);
-        gameScoreLabel.setTranslateY(20);
-        gameScoreLabel.setTranslateZ(100 );
+        styleAndPlaceLabel(gameScoreLabel,20,20,30);
         gameScoreLabel.setText("Wynik na razie zero");
-        root.getChildren().add(gameScoreLabel);
+
+        gameHiScoreLabel = new Label();
+        styleAndPlaceLabel(gameHiScoreLabel, 20, 60, 30);
+        setHiScore();
 
         gameStatusLabel = new Label();
-        gameStatusLabel.setStyle("-fx-font-size: 90px;\n" +
-                "    -fx-font-weight: bold;\n" +
-                "    -fx-text-fill: #333333;\n" +
-                "    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );");
+        styleAndPlaceLabel(gameStatusLabel,100,300, 100);
 
-        gameStatusLabel.setTranslateX(100);
-        gameStatusLabel.setTranslateY(400);
-        gameStatusLabel.setTranslateZ(100);
-        root.getChildren().add(gameStatusLabel);
         createStarfield(STARS_NUMBER, MAX_STAR_SIZE);
 
-    };
+    }
+
+    private void setHiScore() {
+        if (gameScore > gameHiScore) gameHiScore = gameScore;
+        gameHiScoreLabel.setText("Highest Score: " + gameHiScore);
+    }
+
+    ;
 
     private Parent createRoot() {
 
@@ -166,6 +178,7 @@ public class AsterDroidsApp extends Application {
     };
 
     private void gameOver(){
+        setHiScore();
         sound.playPlayerCrash();
         gameStatusLabel.setText("Game Over F5 nowa gra");
         isGameActive = false;
