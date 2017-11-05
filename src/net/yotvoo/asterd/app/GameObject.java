@@ -10,7 +10,9 @@ import javafx.scene.shape.Shape;
 
 public class GameObject {
 
-    final Double ACCELERATION = 0.3d;
+    final Double ACCELERATION = 0.1d;
+    private final double ROTATE_STEP = 3d;
+
     private Shape view;
     private Point2D velocity = new Point2D(0, 0);
     //private Point2D orientation = new Point2D(0,0);
@@ -18,7 +20,6 @@ public class GameObject {
     private final Long MAX_BULLET_AGE = 1000L; // 1 sek
     private final double MAX_VELOCITY_MAGNITUDE = 6; //TODO nie mogę ograniczać prędkośi pocisków,
                                                         // trzeba osobno sterować prędkościami różnych elementów
-    private final double ROTATE_STEP = 10d;
 
     /**
      * @return object age in ms

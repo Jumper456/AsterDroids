@@ -2,16 +2,19 @@ package net.yotvoo.asterd.app;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.stage.Stage;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 
 /**
@@ -19,10 +22,10 @@ import java.util.List;
  */
 public class AsterDroidsApp extends Application {
 
-
+    private BitSet keyboardBitSet = new BitSet();
     private Sound sound;
-
     private Pane root;
+    private Scene scene;
 
     private List<GameObject> bullets = new ArrayList<>();
     private List<GameObject> enemies = new ArrayList<>();
@@ -38,6 +41,7 @@ public class AsterDroidsApp extends Application {
     private Label gameScoreLabel;
     private Label gameHiScoreLabel;
     private Label gameStatusLabel;
+    private Label keysLabel;
 
     private static final double MAX_ENEMY_SIZE = 40;
     private static final double MIN_ENEMY_SIZE = 5;
@@ -49,7 +53,7 @@ public class AsterDroidsApp extends Application {
     private static final double MAX_STAR_SIZE = 4;
     private static final int STARS_NUMBER = 500;
 
-    private static final double BULLETS_INTERVAL = 400d;
+    private static final double BULLETS_INTERVAL = 300d;
     private double lastBulletTimeMS = 0;
 
 
@@ -107,8 +111,11 @@ public class AsterDroidsApp extends Application {
         gameStatusLabel = new Label();
         styleAndPlaceLabel(gameStatusLabel,100,300, 100);
 
-        createStarfield(STARS_NUMBER, MAX_STAR_SIZE);
+        keysLabel = new Label();
+        styleAndPlaceLabel(keysLabel,400,10, 30);
 
+
+        createStarfield(STARS_NUMBER, MAX_STAR_SIZE);
     }
 
     private void setHiScore() {
@@ -116,14 +123,10 @@ public class AsterDroidsApp extends Application {
         gameHiScoreLabel.setText("Highest Score: " + gameHiScore);
     }
 
-    ;
-
     private Parent createRoot() {
-
         root = new Pane();
         root.setPrefSize(1200, 800);
         root.setStyle("-fx-background-color: #000000;");
-
         return root;
     }
 
@@ -161,7 +164,6 @@ public class AsterDroidsApp extends Application {
                     }
                 }
             }
-
         }
     }
 
@@ -174,7 +176,6 @@ public class AsterDroidsApp extends Application {
         player = null;
         createPlayer();
         isGameActive = true;
-
     };
 
     private void gameOver(){
@@ -197,9 +198,6 @@ public class AsterDroidsApp extends Application {
                 gameOver();
             }
         }
-
-
-
     }
 
     private void addGameObjectWithProximityCheck(GameObject enemy){
@@ -235,28 +233,55 @@ public class AsterDroidsApp extends Application {
     }
 
     private void onUpdate() {
+
+        checkCommands(); //checks keyboard keys pressed or other commands;
         if (isGameActive) {
             try {
-
-
                 checkBulletsCollissions();
-
-
                 bullets.removeIf(GameObject::isDead);
                 enemies.removeIf(GameObject::isDead);
-
                 checkPlayerCollission();
-
                 bullets.forEach(GameObject::update);
                 enemies.forEach(GameObject::update);
-
                 player.update();
-
 
                 gameScoreLabel.setText("Score: " + gameScore);
                 spawnEnemy();
+
+
             } catch (Exception e){
                 log("Problem w onUpdate " + e.toString());
+            }
+        }
+    }
+
+    private boolean checkIfKeyPressed(KeyCode keyCode){
+        return keyboardBitSet.get(keyCode.ordinal());
+    }
+
+    private void checkCommands() {
+        //check in the bitset which keys are pressed and do the action
+
+        if (!isGameActive){
+            if (checkIfKeyPressed(KeyCode.F5)) {
+                newGame();
+            }
+        }
+        else {
+            if (checkIfKeyPressed(KeyCode.LEFT)) {
+                player.rotateLeft();
+            }
+
+            if (checkIfKeyPressed(KeyCode.RIGHT)) {
+                player.rotateRight();
+            }
+
+            if (checkIfKeyPressed(KeyCode.UP)) {
+                player.accelerate();
+            }
+
+            if (checkIfKeyPressed(KeyCode.SPACE)) {
+                shootABullet();
             }
         }
     }
@@ -367,6 +392,7 @@ public class AsterDroidsApp extends Application {
         }
     }
 
+    @Deprecated
     private void startKeyHandling(Scene scene){
         scene.setOnKeyPressed(e -> {
             if (!isGameActive){
@@ -389,6 +415,65 @@ public class AsterDroidsApp extends Application {
 
     }
 
+
+
+    /**
+     * "Key Pressed" handler for all input events: register pressed key in the bitset
+     */
+    private EventHandler<KeyEvent> keyPressedEventHandler = new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent event) {
+
+            // register key down
+            keyboardBitSet.set(event.getCode().ordinal(), true);
+
+            updateKeyboardStatus();
+        }
+    };
+
+    /**
+     * "Key Released" handler for all input events: unregister released key in the bitset
+     */
+    private EventHandler<KeyEvent> keyReleasedEventHandler = new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent event) {
+
+            // register key up
+            keyboardBitSet.set(event.getCode().ordinal(), false);
+
+            updateKeyboardStatus();
+        }
+    };
+
+    /**
+     * Detect all keys and show them in the label
+     */
+    private void updateKeyboardStatus() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("Current key combination: ");
+
+        int count = 0;
+        for( KeyCode keyCode: KeyCode.values()) {
+
+            if( keyboardBitSet.get(keyCode.ordinal())) {
+
+                if( count > 0) {
+                    sb.append( " ");
+                }
+
+                sb.append(keyCode.toString());
+
+                count++;
+            }
+
+        }
+
+        keysLabel.setText(sb.toString());
+
+    }
+
+
     @Override
     public void start(Stage stage) throws Exception {
 /*
@@ -401,7 +486,8 @@ public class AsterDroidsApp extends Application {
 
 */
         isGameActive = false;
-        stage.setScene(new Scene(createRoot()));
+        scene = new Scene(createRoot());
+        stage.setScene(scene);
         createContent();
         gameStatusLabel.setText("F5 nowa gra");
         AnimationTimer timer = new AnimationTimer() {
@@ -411,7 +497,16 @@ public class AsterDroidsApp extends Application {
             }
         };
         timer.start();
-        startKeyHandling(stage.getScene());
+//        startKeyHandling(stage.getScene());
+
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, keyPressedEventHandler);
+        scene.addEventFilter(KeyEvent.KEY_RELEASED, keyReleasedEventHandler);
+
+        // init label text
+        updateKeyboardStatus();
+
+
+
         stage.setTitle("AsterDroids");
         stage.setResizable(false);
         stage.show();
