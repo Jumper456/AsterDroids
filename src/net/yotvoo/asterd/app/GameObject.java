@@ -1,7 +1,6 @@
 package net.yotvoo.asterd.app;
 
 import javafx.geometry.Point2D;
-//import javafx.scene.Node;
 import javafx.scene.shape.Shape;
 
 /**
@@ -20,6 +19,17 @@ public class GameObject {
     private final Long MAX_BULLET_AGE = 1000L; // 1 sek
     private double maxVelocityMagnitude = 6;
 
+    private int gameObjectSize; //current size (loosly corresponding to shape size), it is about how many times it can split
+
+    public int getGameObjectSize() {
+        return gameObjectSize;
+    }
+
+    public void setGameObjectSize(int size) {
+        this.gameObjectSize = size;
+    }
+
+
     public double getMaxVelocityMagnitude() {
         return maxVelocityMagnitude;
     }
@@ -27,8 +37,6 @@ public class GameObject {
     public void setMaxVelocityMagnitude(double maxVelocityMagnitude) {
         this.maxVelocityMagnitude = maxVelocityMagnitude;
     }
-
-
 
     /**
      * @return object age in ms
@@ -154,16 +162,5 @@ public class GameObject {
             AsterDroidsApp.log("Problem w czasie sprawdzania intersekcji Shapów: " + e.toString());
             return false;
         }
-
-        //return false;
-
-/*  does not work for the javafx as Area is from AWT
-        Area areaA = new Area(getView());
-        areaA.intersect(new Area(other.getView()));
-        return !areaA.isEmpty();
-*/
-
-
-
     }
 }

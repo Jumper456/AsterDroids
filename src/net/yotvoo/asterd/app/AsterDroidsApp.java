@@ -43,15 +43,16 @@ public class AsterDroidsApp extends Application {
     private Label gameStatusLabel;
     private Label keysLabel;
 
-    private static final double MAX_ENEMY_SIZE = 40;
+    private static final double MAX_ENEMY_SIZE = 20;
     private static final double MIN_ENEMY_SIZE = 5;
     private static final double MAX_ENEMY_SPEED = 3;
     private static final double MAX_ENEMY_PROXIMITY = 100;
-    private static final double MAX_ENEMY_COUNT = 30;
+    private static final double MAX_ENEMY_COUNT = 20;
     private static final double ENEMY_SPAWN_RATIO = 0.02;
 
     private static final double MAX_STAR_SIZE = 4;
     private static final int STARS_NUMBER = 500;
+
 
     private static final double BULLETS_INTERVAL = 300d;
     private double lastBulletTimeMS = 0;
@@ -66,7 +67,7 @@ public class AsterDroidsApp extends Application {
         player = new Player();
         player.setVelocity(new Point2D(1, 0));
         player.setMaxVelocityMagnitude(5);
-        addGameObject(player, 300, 300);
+        addGameObjectToRoot(player, 300, 300);
 
     }
 
@@ -133,21 +134,32 @@ public class AsterDroidsApp extends Application {
 
     private void addBullet(GameObject bullet, double x, double y) {
         bullets.add(bullet);
-        addGameObject(bullet, x, y);
+        addGameObjectToRoot(bullet, x, y);
     }
 
     private void addEnemy(GameObject enemy, double x, double y) {
         enemies.add(enemy);
-        addGameObject(enemy, x, y);
+        addGameObjectToRoot(enemy, x, y);
     }
 
-    private void addGameObject(GameObject object, double x, double y) {
+    private void addGameObjectToRoot(GameObject object, double x, double y) {
         object.getView().setTranslateX(x);
         object.getView().setTranslateY(y);
         root.getChildren().add(object.getView());
     }
 
     private void checkBulletsCollissions() {
+
+        List<GameObject> listOfNewGameObjects = new ArrayList<>();
+/*
+        for (String str : myArrayList) {
+            if (someCondition) {
+                toRemove.add(str);
+            }
+        }
+        myArrayList.removeAll(toRemove);
+*/
+
         for (GameObject bullet : bullets) {
             if (bullet.isTooOld()) {
                 bullet.setAlive(false);
@@ -157,15 +169,71 @@ public class AsterDroidsApp extends Application {
                     if (bullet.isColliding(enemy)) {
 
                         sound.playAsteroidExplosion();
+
+                        listOfNewGameObjects = destroyEnemy(enemy,bullet);
                         bullet.setAlive(false);
-                        enemy.setAlive(false);
 
                         root.getChildren().removeAll(bullet.getView(), enemy.getView());
                         gameScore++;
                     }
                 }
+                //needed to use this construction to avoid ConcurentModificationException
+                //due to the ArrayList modification during iterating this list
+                enemies.addAll(listOfNewGameObjects);
+                listOfNewGameObjects.clear();
+
+                if (listOfNewGameObjects.size()>0) {
+                    AsterDroidsApp.log("Ilość shardów: " + listOfNewGameObjects.size());
+                    //AsterDroidsApp.log(listOfNewGameObjects.toString());
+                    AsterDroidsApp.log("Ilość asteroidów : " + enemies.size());
+
+                }
+
             }
         }
+    }
+
+    private Enemy generateEnemyShard(double size, GameObject bullet){
+
+        Enemy enemy = new Enemy((int)size);
+        enemy.setVelocity(new Point2D((Math.random() - 0.5d) * MAX_ENEMY_SPEED,
+                (Math.random() - 0.5d) * MAX_ENEMY_SPEED));
+        AsterDroidsApp.log("Spawned enemy shard with velocity " + enemy.getVelocity().toString());
+        return enemy;
+
+    }
+
+
+    /**
+     * @param enemy - enemy to be shareded or destroyed
+     * @param bullet - bullet which colided the enemy
+     *
+     * This function destroys the enemy if it is small enough or creates shards
+     * These shards should travel in the direction of the shard with some random direction added
+     * and with bullet momentum also added
+     */
+    private ArrayList<GameObject> destroyEnemy(GameObject enemy, GameObject bullet) {
+
+        final int MAX_SHARDS = 2;
+        int shardsCount;
+        Enemy enemyShard;
+        ArrayList<GameObject> gameObjects = new ArrayList<GameObject>();
+
+        if (enemy.getGameObjectSize() > MIN_ENEMY_SIZE){
+
+            shardsCount = (int) Math.round(Math.random() * MAX_SHARDS) + 2 ;
+            for (int i = 0; i < shardsCount; i++){
+                enemyShard = generateEnemyShard(enemy.getGameObjectSize()/Math.sqrt(shardsCount), bullet);
+                gameObjects.add(enemyShard);
+                addGameObjectToRoot(enemyShard, enemy.getView().getTranslateX(), enemy.getView().getTranslateY());  // adds to View
+            }
+
+            //int size = (int) Math.floor(MAX_ENEMY_SIZE * Math.random());
+            //if (size < MIN_ENEMY_SIZE) size = (int) MIN_ENEMY_SIZE;
+        }
+        enemy.setAlive(false);
+        //root.getChildren().remove(enemy.getView());
+        return gameObjects;
     }
 
     private void newGame(){
@@ -196,6 +264,7 @@ public class AsterDroidsApp extends Application {
     private void checkPlayerCollission() {
         for (GameObject enemy : enemies) {
             if (enemy.isColliding(player)) {
+                AsterDroidsApp.log("Killed with enemy velocity " + enemy.getVelocity().toString());
                 gameOver();
             }
         }
@@ -211,6 +280,7 @@ public class AsterDroidsApp extends Application {
         if (Math.abs ( player.getView().getTranslateX() - x ) >= MAX_ENEMY_PROXIMITY) {
             if (Math.abs ( player.getView().getTranslateY() - y ) >= MAX_ENEMY_PROXIMITY) {
                 addEnemy(enemy, x, y);
+                AsterDroidsApp.log("Spawned enemy with velocity " + enemy.getVelocity().toString());
             }
         }
     };
@@ -264,11 +334,15 @@ public class AsterDroidsApp extends Application {
         //check in the bitset which keys are pressed and do the action
 
         if (!isGameActive){
+
+            //controll screen actions/ out of the game
             if (checkIfKeyPressed(KeyCode.F5)) {
                 newGame();
             }
         }
         else {
+
+            //during the game actions
             if (checkIfKeyPressed(KeyCode.LEFT)) {
                 player.rotateLeft();
             }
@@ -314,8 +388,9 @@ public class AsterDroidsApp extends Application {
 
         Double  elements[] = new Double[vertexCount*2];
 
-        for (int i = 0; i < vertexCount * 2; i++){
+        for (int i = 0; i < vertexCount*2 ; i+=2){
             elements[i] = Math.random() * baseSize;
+            elements[i+1] = Math.random() * baseSize;
         }
 
         return elements;
@@ -323,50 +398,61 @@ public class AsterDroidsApp extends Application {
 
     private static class Enemy extends GameObject {
 
-        private Shape preparePolyAsteroid(double size, int vertexCount){
-            Polygon polygon = new Polygon();
-            //polygon.getPoints().addAll(new Double[]{-30d, -10d, 0d, 0d, -30d, 10d, -20d, -10d});
-            polygon.getPoints().addAll(generateRandomPolygon((double)size, vertexCount));
-            polygon.setFill(Color.DARKGOLDENROD);
-            return polygon;
-        }
 
+/*
         private double getRandomSize(double maxSize){
             double size = maxSize * Math.random();
             if (size < MIN_ENEMY_SIZE) size = MIN_ENEMY_SIZE;
             return size;
         }
+*/
+
+        private Shape preparePolyAsteroid(double size, int vertexCount){
+            double sizeCopy = size * 10;
+            Polygon polygon = new Polygon();
+            polygon.getPoints().addAll(new Double[]{-0.30d*sizeCopy, -0.10d*sizeCopy, 0d, 0d, -0.30d*sizeCopy,
+                    0.10d*sizeCopy, -0.20d*sizeCopy, -0.10d*sizeCopy});
+            //polygon.getPoints().addAll(generateRandomPolygon((double)size, vertexCount));
+            polygon.setFill(Color.DARKGOLDENROD);
+            return polygon;
+        }
 
         private Shape prepareCircleAsteroid(double size) {
-            return  new Circle(0, 0, getRandomSize(MAX_ENEMY_SIZE), Color.DARKGOLDENROD);
+            return  new Circle(0, 0, size, Color.DARKGOLDENROD);
         }
 
 
         private Shape prepareRectangleAsteroid(double size) {
-            return  new Rectangle( getRandomSize(MAX_ENEMY_SIZE), getRandomSize(MAX_ENEMY_SIZE), Color.DARKGOLDENROD);
+            return  new Rectangle( size, size, Color.DARKGOLDENROD);
         }
 
         Enemy(int size) {
             super();
+            setGameObjectSize(size);
+            Shape shape = prepareCircleAsteroid(size);
+            super.setView(shape);
+
+/*
             double random = Math.random();
             if (random < 0.3d) {
-                Shape shape = preparePolyAsteroid(MAX_ENEMY_SIZE ,5);
+                Shape shape = preparePolyAsteroid(size ,5);
                 super.setView(shape);
             }
             else if (random < 0.6d) {
-                Shape shape = prepareCircleAsteroid(MAX_ENEMY_SIZE );
+                Shape shape = prepareCircleAsteroid(size);
                 super.setView(shape);
             }
             else if (random < 0.9d) {
-                Shape shape = prepareRectangleAsteroid(MAX_ENEMY_SIZE );
+                Shape shape = prepareRectangleAsteroid(size);
                 super.setView(shape);
 
             }
             else {
-                Shape shape = preparePolyAsteroid(MAX_ENEMY_SIZE * 2,8);
+                Shape shape = preparePolyAsteroid(size ,8);
                 super.setView(shape);
 
             }
+*/
         }
 
     }
@@ -394,6 +480,8 @@ public class AsterDroidsApp extends Application {
         }
     }
 
+
+/*
     @Deprecated
     private void startKeyHandling(Scene scene){
         scene.setOnKeyPressed(e -> {
@@ -416,6 +504,7 @@ public class AsterDroidsApp extends Application {
         });
 
     }
+*/
 
 
 
