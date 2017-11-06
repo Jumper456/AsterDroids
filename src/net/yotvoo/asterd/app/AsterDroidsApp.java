@@ -65,6 +65,7 @@ public class AsterDroidsApp extends Application {
     private void createPlayer(){
         player = new Player();
         player.setVelocity(new Point2D(1, 0));
+        player.setMaxVelocityMagnitude(5);
         addGameObject(player, 300, 300);
 
     }
@@ -386,7 +387,8 @@ public class AsterDroidsApp extends Application {
         if ((lastBulletTimeMS + BULLETS_INTERVAL) < System.currentTimeMillis()) {
             lastBulletTimeMS = System.currentTimeMillis();
             Bullet bullet = new Bullet();
-            bullet.setVelocity(player.getOrientation().normalize().multiply(5));
+            bullet.setMaxVelocityMagnitude(8);
+            bullet.setVelocity(player.getOrientation().normalize().multiply(7));
             addBullet(bullet, player.getView().getTranslateX(), player.getView().getTranslateY());
             sound.playShooting();
         }

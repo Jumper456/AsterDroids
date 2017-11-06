@@ -18,8 +18,17 @@ public class GameObject {
     //private Point2D orientation = new Point2D(0,0);
     private Long ageStart;
     private final Long MAX_BULLET_AGE = 1000L; // 1 sek
-    private final double MAX_VELOCITY_MAGNITUDE = 6; //TODO nie mogę ograniczać prędkośi pocisków,
-                                                        // trzeba osobno sterować prędkościami różnych elementów
+    private double maxVelocityMagnitude = 6;
+
+    public double getMaxVelocityMagnitude() {
+        return maxVelocityMagnitude;
+    }
+
+    public void setMaxVelocityMagnitude(double maxVelocityMagnitude) {
+        this.maxVelocityMagnitude = maxVelocityMagnitude;
+    }
+
+
 
     /**
      * @return object age in ms
@@ -77,7 +86,7 @@ public class GameObject {
     }
 
     public void setVelocity(Point2D velocity) {
-        if (vectorMagnitude(velocity) <= MAX_VELOCITY_MAGNITUDE){
+        if (vectorMagnitude(velocity) <= maxVelocityMagnitude){
             this.velocity = velocity;
         }
     }
