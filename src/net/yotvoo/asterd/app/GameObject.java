@@ -97,6 +97,13 @@ public class GameObject {
         if (vectorMagnitude(velocity) <= maxVelocityMagnitude){
             this.velocity = velocity;
         }
+        else{
+            //normalize the velocity to maxVelocityMagnitude
+            double factor = vectorMagnitude(velocity) / maxVelocityMagnitude;
+            double x = velocity.getX() / factor;
+            double y = velocity.getY() / factor;
+            this.velocity = new Point2D(x,y);
+        }
     }
 
     public Point2D getVelocity() {
