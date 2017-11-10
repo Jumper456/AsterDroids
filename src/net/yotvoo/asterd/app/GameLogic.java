@@ -7,23 +7,23 @@ import javafx.scene.input.KeyCode;
 /**
  * GameLogic contains the logic of the game
  */
-public class GameLogic {
+class GameLogic {
 
-    private GameView gameView;
-    private Sound sound;
-    private Controll controll;
-    private GameFieldModel gameFieldModel;
+    private final GameView gameView;
+    private final Sound sound;
+    private final Control control;
+    private final GameFieldModel gameFieldModel;
 
     private boolean isGameActive;
 
     private long gameScore = 0;
     private long gameHiScore = 0;
 
-    public GameLogic(GameView gameView, Controll controll, Sound sound) {
+    GameLogic(GameView gameView, Control control, Sound sound) {
 
         this.gameView = gameView;
         this.sound = sound;
-        this.controll = controll;
+        this.control = control;
         isGameActive = false;
         gameFieldModel = new GameFieldModel(gameView, sound);
 
@@ -43,7 +43,7 @@ public class GameLogic {
     }
 
 
-    void newGame(){
+    private void newGame(){
         gameScore = 0;
         gameView.recreateContent();
         gameView.updateHiScore(gameHiScore);
@@ -64,28 +64,28 @@ public class GameLogic {
 
         if (!isGameActive()){
 
-            //controll screen actions/ out of the game
-            if (controll.checkIfKeyPressed(KeyCode.F5)) {
+            //control screen actions/ out of the game
+            if (control.checkIfKeyPressed(KeyCode.F5)) {
                 newGame();
             }
         }
         else {
 
             //during the game actions
-            if (controll.checkIfKeyPressed(KeyCode.LEFT)) {
+            if (control.checkIfKeyPressed(KeyCode.LEFT)) {
                 gameFieldModel.rotatePlayer(GameFieldModel.ROTATE_LEFT);
             }
 
-            if (controll.checkIfKeyPressed(KeyCode.RIGHT)) {
+            if (control.checkIfKeyPressed(KeyCode.RIGHT)) {
                 gameFieldModel.rotatePlayer(GameFieldModel.ROTATE_RIGHT);
             }
 
-            if (controll.checkIfKeyPressed(KeyCode.UP)) {
+            if (control.checkIfKeyPressed(KeyCode.UP)) {
                 gameFieldModel.acceleratePlayer();
                 sound.playThrust();
             }
 
-            if (controll.checkIfKeyPressed(KeyCode.SPACE)) {
+            if (control.checkIfKeyPressed(KeyCode.SPACE)) {
                 gameFieldModel.shootABullet();
             }
         }
@@ -112,7 +112,7 @@ public class GameLogic {
         }
     }
 
-    public boolean isGameActive() {
+    private boolean isGameActive() {
         return isGameActive;
     }
 

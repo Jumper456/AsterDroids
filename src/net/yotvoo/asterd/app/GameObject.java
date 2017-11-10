@@ -3,38 +3,35 @@ package net.yotvoo.asterd.app;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Shape;
 
-public class GameObject {
+@SuppressWarnings("SameParameterValue")
+class GameObject {
     private Shape view;
     private Point2D velocity = new Point2D(0, 0);
+    @SuppressWarnings("CanBeFinal")
     private long ageStart;
     private double maxVelocityMagnitude = 6d;
     private boolean alive = true;
-    //current size (loosly corresponding to shape size), it is about how many times it can split
+    //current size (losly corresponding to shape size), it is about how many times it can split
     private int gameObjectSize;
 
 
-    public void setMaxVelocityMagnitude(double maxVelocityMagnitude) {
+    void setMaxVelocityMagnitude(double maxVelocityMagnitude) {
         this.maxVelocityMagnitude = maxVelocityMagnitude;
     }
 
-    public int getGameObjectSize() {
+    int getGameObjectSize() {
         return gameObjectSize;
     }
 
-    public void setGameObjectSize(int sizeParam) {
+    void setGameObjectSize(int sizeParam) {
         this.gameObjectSize = sizeParam;
     }
 
-/*
-    public double getMaxVelocityMagnitude() {
-        return maxVelocityMagnitude;
-    }
-*/
 
     /**
      * @return object age in ms
      */
-    public long getAge() {
+    private long getAge() {
         return System.currentTimeMillis() - ageStart;
     }
 
@@ -50,30 +47,30 @@ public class GameObject {
     }
 */
 
-    public boolean isTooOld(){
+    boolean isTooOld(){
         return ( getAge() > Constants.MAX_BULLET_AGE);
     }
 
 
-    public Point2D getOrientation() {
+    Point2D getOrientation() {
         return new Point2D(Math.cos(Math.toRadians(getRotate())), Math.sin(Math.toRadians(getRotate())));
     }
 
 
-    public GameObject(Shape view) {
+    GameObject(Shape view) {
         this.view = view;
         ageStart = System.currentTimeMillis();
     }
 
-    public GameObject() {
+    GameObject() {
         ageStart = System.currentTimeMillis();
     }
 
-    public void update() {
+    void update() {
         view.setTranslateX(view.getTranslateX() + velocity.getX());
         view.setTranslateY(view.getTranslateY() + velocity.getY());
 
-        //TODO change the bounds to the pane with and height, to accomodate field size changes
+        //TODO change the bounds to the pane with and height, to acomodate field size changes
         if (view.getTranslateX()<0){ view.setTranslateX(1200);}
         if (view.getTranslateY()<0){ view.setTranslateY(800);}
         if (view.getTranslateX()>1200){ view.setTranslateX(0);}
@@ -84,7 +81,7 @@ public class GameObject {
         return Math.sqrt(Math.pow(vector.getX(),2)+Math.pow(vector.getY(),2));
     }
 
-    public void setVelocity(Point2D velocity) {
+    void setVelocity(Point2D velocity) {
         if (vectorMagnitude(velocity) <= maxVelocityMagnitude){
             this.velocity = velocity;
         }
@@ -97,45 +94,41 @@ public class GameObject {
         }
     }
 
-    public Point2D getVelocity() {
+    Point2D getVelocity() {
         return velocity;
     }
 
-    public Shape getView() {
+    Shape getView() {
         return view;
     }
 
-    public void setView(Shape shape) {
+    void setView(Shape shape) {
         view = shape;
     }
 
-    public boolean isAlive() {
-        return alive;
-    }
-
-    public boolean isDead() {
+    boolean isDead() {
         return !alive;
     }
 
-    public void setAlive(boolean alive) {
+    void setAlive(boolean alive) {
         this.alive = alive;
     }
 
-    public double getRotate() {
+    private double getRotate() {
         return view.getRotate();
     }
 
-    public void rotateRight() {
+    void rotateRight() {
         view.setRotate(view.getRotate() + Constants.ROTATE_STEP);
         //setVelocity(new Point2D(Math.cos(Math.toRadians(getRotate())), Math.sin(Math.toRadians(getRotate()))));
     }
 
-    public void rotateLeft() {
+    void rotateLeft() {
         view.setRotate(view.getRotate() - Constants.ROTATE_STEP);
         //setVelocity(new Point2D(Math.cos(Math.toRadians(getRotate())), Math.sin(Math.toRadians(getRotate()))));
     }
 
-    public void accelerate(){
+    void accelerate(){
 
         double xVelocity;
         double yVelocity;
@@ -151,7 +144,7 @@ public class GameObject {
 
     }
 
-    public boolean isColliding(GameObject other) {
+    boolean isColliding(GameObject other) {
 
         //simple checking of probably rectangle bounds, not to exact
         //return getView().getBoundsInParent().intersects(other.getView().getBoundsInParent());

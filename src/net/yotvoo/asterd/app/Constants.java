@@ -1,6 +1,6 @@
 package net.yotvoo.asterd.app;
 
-public class Constants {
+class Constants {
     static final double MAX_ENEMY_SIZE = 20d;
     static final double MIN_ENEMY_SIZE = 5d;
     static final double MAX_ENEMY_SPEED = 3d;

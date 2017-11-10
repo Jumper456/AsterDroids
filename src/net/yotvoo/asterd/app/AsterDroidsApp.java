@@ -8,23 +8,19 @@ import javafx.stage.Stage;
  * Simple game based on classic Asteroids game
  * Made for fun ale learning purposes
  */
+@SuppressWarnings({"FieldCanBeLocal", "unused"})
 public class AsterDroidsApp extends Application {
-
-    private GameLogic gameLogic;
-    private GameView gameView;
-    private Controll controll;
-    private Sound sound;
-
-    public static void log(String string){
+    private static GameLogic gameLogic;
+    static void log(String string){
         System.out.println(string);
     }
 
     @Override
     public void start(Stage stage) throws Exception {
-        sound = new Sound();
-        gameView = new GameView(stage);
-        controll = new Controll(gameView);
-        gameLogic = new GameLogic(gameView, controll, sound);
+        Sound sound = new Sound();
+        GameView gameView = new GameView(stage);
+        Control control = new Control(gameView);
+        gameLogic = new GameLogic(gameView, control, sound);
     }
 
     public static void main(String[] args) {

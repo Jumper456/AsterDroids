@@ -5,19 +5,19 @@ import javafx.geometry.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameFieldModel {
+class GameFieldModel {
 
-    public static final int ROTATE_RIGHT = 1;
-    public static final int ROTATE_LEFT = 2;
+    static final int ROTATE_RIGHT = 1;
+    static final int ROTATE_LEFT = 2;
 
-    private GameView gameView;
-    private Sound sound;
-    private List<GameObject> bullets = new ArrayList<>();
-    private List<GameObject> enemies = new ArrayList<>();
+    private final GameView gameView;
+    private final Sound sound;
+    private final List<GameObject> bullets = new ArrayList<>();
+    private final List<GameObject> enemies = new ArrayList<>();
     private GameObject player;
     private double lastBulletTimeMS = 0;
 
-    public GameFieldModel(GameView gameView, Sound sound) {
+    GameFieldModel(GameView gameView, Sound sound) {
         this.gameView = gameView;
         this.sound = sound;
     }
@@ -108,12 +108,13 @@ public class GameFieldModel {
      * These shards should travel in the direction of the shard with some random direction added
      * and with bullet momentum also added
      */
+    @SuppressWarnings("Convert2Diamond")
     private ArrayList<GameObject> destroyEnemy(GameObject enemy, GameObject bullet) {
 
         final int MAX_SHARDS = 2;
         int shardsCount;
         EnemyObject enemyShard;
-        ArrayList<GameObject> gameObjects = new ArrayList<GameObject>();
+        @SuppressWarnings("Convert2Diamond") ArrayList<GameObject> gameObjects = new ArrayList<GameObject>();
 
         if (enemy.getGameObjectSize() > Constants.MIN_ENEMY_SIZE){
 
@@ -133,7 +134,7 @@ public class GameFieldModel {
     }
 
 
-    public void prepareNewGame() {
+    void prepareNewGame() {
         enemies.clear();
         bullets.clear();
         player = null;
@@ -204,7 +205,7 @@ public class GameFieldModel {
     /**
      * @return score earned by player during this update, -1 means player is destroyed, positive
      */
-    public int update() {
+    int update() {
         int scoreEarned = checkBulletsCollissions();
         bullets.removeIf(GameObject::isDead);
         enemies.removeIf(GameObject::isDead);
@@ -218,14 +219,14 @@ public class GameFieldModel {
             return scoreEarned;
     }
 
-    public void rotatePlayer(int rotate) {
+    void rotatePlayer(int rotate) {
         if (rotate == ROTATE_RIGHT)
             player.rotateRight();
         else
             player.rotateLeft();
     }
 
-    public void acceleratePlayer() {
+    void acceleratePlayer() {
         player.accelerate();
     }
 }

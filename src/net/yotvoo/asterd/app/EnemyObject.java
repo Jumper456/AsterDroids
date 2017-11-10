@@ -7,7 +7,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 
-public class EnemyObject extends GameObject {
+@SuppressWarnings("unused")
+class EnemyObject extends GameObject {
 
 /*
         private double getRandomSize(double maxSize){

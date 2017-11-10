@@ -16,18 +16,17 @@ import javafx.scene.shape.Shape;
  * GameView maintains visual elements of the game application
  */
 
-public class GameView {
+@SuppressWarnings("SameParameterValue")
+class GameView {
 
     private Pane root;
-    private Stage stage;
-    private Scene scene;
+    private final Scene scene;
     private Label gameScoreLabel;
     private Label gameHiScoreLabel;
     private Label gameStatusLabel;
     private Label keysLabel;
 
-    public GameView(Stage stage) {
-        this.stage = stage;
+    GameView(Stage stage) {
         scene = new Scene(createRoot());
         stage.setScene(scene);
         createContent();
@@ -36,26 +35,23 @@ public class GameView {
         stage.setTitle("AsterDroids");
         stage.setResizable(false);
         stage.show();
-
-
     }
 
     private Shape createStar(double maxSize, int x, int y){
-        Shape star = new Circle(x,y,maxSize/2, Color.DARKGRAY);
-        return star;
+        return new Circle(x,y,maxSize/2, Color.DARKGRAY);
     }
 
-    private void createStarfield(int starsNumber, double maxSize){
+    @SuppressWarnings("SameParameterValue")
+    private void createStarfield(@SuppressWarnings("SameParameterValue") final int starsNumber, final double maxSize){
         for (int i = 0; i < starsNumber; i++){
             int x = (int) Math.floor( root.getWidth() * Math.random());
             int y = (int) Math.floor(  root.getHeight() * Math.random());
-            double size = Constants.MAX_STAR_SIZE * Math.random();
+            double size = maxSize * Math.random();
             if (size < 1) size = 1;
             root.getChildren().add(createStar( size, x, y ));
         }
     }
     private void styleAndPlaceLabel(Label label,int x, int y, int fontSize){
-
         label.setStyle("-fx-font-size: " + fontSize + "px;\n" +
                 "    -fx-font-weight: bold;\n" +
                 "    -fx-text-fill: #333333;\n" +
@@ -80,7 +76,6 @@ public class GameView {
         keysLabel = new Label();
         styleAndPlaceLabel(keysLabel,400,10, 30);
 
-
         createStarfield(Constants.STARS_NUMBER, Constants.MAX_STAR_SIZE);
     }
 
@@ -91,38 +86,51 @@ public class GameView {
         return root;
     }
 
-    public void addGameObject(Shape shape) {
+    void addGameObject(Shape shape) {
         root.getChildren().add(shape);
     }
 
-    public void removeGameObject(Shape shape) {
+    void removeGameObject(Shape shape) {
         root.getChildren().remove(shape);
     }
 
-    public void removeGameObjectsAll(Shape... shapes) {
+    void removeGameObjectsAll(Shape... shapes) {
         root.getChildren().removeAll(shapes);
     }
 
-    public void recreateContent() {
+    void recreateContent() {
         root.getChildren().clear();
         createContent();
     }
 
-    public void displayGameOver() {
+    void displayGameOver() {
         gameStatusLabel.setText("Game Over F5 nowa gra");
     }
 
-    public void updateScore(long gameScore) {
+    void updateScore(long gameScore) {
         gameScoreLabel.setText("Score: " + gameScore);
     }
 
-    public void updateHiScore(long gameHiScore) {
+    void updateHiScore(long gameHiScore) {
         gameHiScoreLabel.setText("Highest Score: " + gameHiScore);
     }
 
-    public void updatePressedKeysLabel(String s) {
+    void updatePressedKeysLabel(String s) {
         keysLabel.setText(s);
     }
+
+    double getWidth() {
+        return root.getWidth();
+    }
+
+    double getHeight() {
+        return root.getHeight();
+    }
+
+    Scene getScene() {
+        return scene;
+    }
+
 
     private void drawCollision(Shape shape1 , Shape shape2){
         Shape path = Path.intersect(shape1, shape2);
@@ -130,16 +138,5 @@ public class GameView {
         root.getChildren().addAll(path);
     }
 
-    public double getWidth() {
-        return root.getWidth();
-    }
-
-    public double getHeight() {
-        return root.getHeight();
-    }
-
-    public Scene getScene() {
-        return scene;
-    }
 
 }

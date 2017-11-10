@@ -4,7 +4,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import net.yotvoo.asterd.app.GameObject;
 
-public class PlayerObject extends GameObject {
+class PlayerObject extends GameObject {
 
     PlayerObject() {
         super();
