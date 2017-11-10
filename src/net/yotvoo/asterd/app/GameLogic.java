@@ -162,6 +162,8 @@ public class GameLogic {
     void newGame(){
         gameScore = 0;
         gameView.recreateContent();
+        gameView.updateHiScore(gameHiScore);
+
         enemies.clear();
         bullets.clear();
         player = null;

@@ -79,6 +79,6 @@ public class Controll {
 
         }
 
-        gameView.updateKeysLabel(sb.toString());
+        gameView.updatePressedKeysLabel(sb.toString());
     }
 }

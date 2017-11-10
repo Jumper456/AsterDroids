@@ -13,9 +13,10 @@ import javafx.stage.Stage;
 /**
  * GameView maintains visual elements of the game application
  */
-public class GameView {
-    private Pane root;
 
+public class GameView {
+
+    private Pane root;
     public Scene getScene() {
         return scene;
     }
@@ -65,7 +66,6 @@ public class GameView {
         label.setTranslateX(x);
         label.setTranslateY(y);
         root.getChildren().add(label);
-
     }
 
     private void createContent(){
@@ -75,7 +75,6 @@ public class GameView {
 
         gameHiScoreLabel = new Label();
         styleAndPlaceLabel(gameHiScoreLabel, 20, 60, 30);
-        updateHiScore(0);
 
         gameStatusLabel = new Label();
         styleAndPlaceLabel(gameStatusLabel,100,300, 100);
@@ -92,15 +91,6 @@ public class GameView {
         root.setPrefSize(1200, 800);
         root.setStyle("-fx-background-color: #000000;");
         return root;
-    }
-
-
-    public void updateKeysLabel(String s) {
-        keysLabel.setText(s);
-    }
-
-    public void updateHiScore(long gameHiScore) {
-        gameHiScoreLabel.setText("Highest Score: " + gameHiScore);
     }
 
     public void addGameObject(Shape shape) {
@@ -124,6 +114,23 @@ public class GameView {
         gameStatusLabel.setText("Game Over F5 nowa gra");
     }
 
+    public void updateScore(long gameScore) {
+        gameScoreLabel.setText("Score: " + gameScore);
+    }
+
+    public void updateHiScore(long gameHiScore) {
+        gameHiScoreLabel.setText("Highest Score: " + gameHiScore);
+    }
+
+    public void updatePressedKeysLabel(String s) {
+        keysLabel.setText(s);
+    }
+
+    private void drawCollision(Shape shape1 , Shape shape2){
+        Shape path = Path.intersect(shape1, shape2);
+        path.setFill(Color.RED);
+        root.getChildren().addAll(path);
+    }
 
     public double getWidth() {
         return root.getWidth();
@@ -131,16 +138,6 @@ public class GameView {
 
     public double getHeight() {
         return root.getHeight();
-    }
-
-    public void updateScore(long gameScore) {
-        gameScoreLabel.setText("Score: " + gameScore);
-    }
-
-    private void drawCollision(Shape shape1 , Shape shape2){
-        Shape path = Path.intersect(shape1, shape2);
-        path.setFill(Color.RED);
-        root.getChildren().addAll(path);
     }
 
 }
