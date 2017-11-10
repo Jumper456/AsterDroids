@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
+
 /**
  * @author
  */
@@ -64,7 +65,7 @@ public class AsterDroidsApp extends Application {
     };
 
     private void createPlayer(){
-        player = new Player();
+        player = new PlayerObject();
         player.setVelocity(new Point2D(1, 0));
         player.setMaxVelocityMagnitude(5);
         addGameObjectToRoot(player, 300, 300);
@@ -193,9 +194,9 @@ public class AsterDroidsApp extends Application {
         }
     }
 
-    private Enemy generateEnemyShard(double size, GameObject bullet){
+    private EnemyObject generateEnemyShard(double size, GameObject bullet){
 
-        Enemy enemy = new Enemy((int)size);
+        EnemyObject enemy = new EnemyObject((int)size);
         enemy.setVelocity(new Point2D((Math.random() - 0.5d) * MAX_ENEMY_SPEED,
                 (Math.random() - 0.5d) * MAX_ENEMY_SPEED));
         AsterDroidsApp.log("Spawned enemy shard with velocity " + enemy.getVelocity().toString());
@@ -216,7 +217,7 @@ public class AsterDroidsApp extends Application {
 
         final int MAX_SHARDS = 2;
         int shardsCount;
-        Enemy enemyShard;
+        EnemyObject enemyShard;
         ArrayList<GameObject> gameObjects = new ArrayList<GameObject>();
 
         if (enemy.getGameObjectSize() > MIN_ENEMY_SIZE){
@@ -291,7 +292,7 @@ public class AsterDroidsApp extends Application {
                 if (Math.random() < ENEMY_SPAWN_RATIO) {
                     int size = (int) Math.floor(MAX_ENEMY_SIZE * Math.random());
                     if (size < MIN_ENEMY_SIZE) size = (int) MIN_ENEMY_SIZE;
-                    Enemy enemy = new Enemy(size);
+                    EnemyObject enemy = new EnemyObject(size);
                     enemy.setVelocity(new Point2D((Math.random() - 0.5d) * MAX_ENEMY_SPEED,
                             (Math.random() - 0.5d) * MAX_ENEMY_SPEED));
                     addGameObjectWithProximityCheck(enemy);
@@ -363,108 +364,6 @@ public class AsterDroidsApp extends Application {
     }
 
 
-    private static class Player extends GameObject {
-
-        Player() {
-            super();
-/*
-            Rectangle ship = new Rectangle(40, 20, Color.BLUE);
-            ship.setArcWidth(10);
-            ship.setArcHeight(10);
-*/
-            Polygon ship = new Polygon();
-            ship.getPoints().addAll(new Double[]{-30d,-10d,
-                                                0d,0d,
-                                                -30d,10d});
-
-            ship.setFill(Color.BLUEVIOLET);
-            super.setView(ship);
-
-
-        }
-    }
-
-
-    private static Double[] generateRandomPolygon(Double baseSize, int vertexCount){
-
-        Double  elements[] = new Double[vertexCount*2];
-
-        for (int i = 0; i < vertexCount*2 ; i+=2){
-            elements[i] = Math.random() * baseSize;
-            elements[i+1] = Math.random() * baseSize;
-        }
-
-        return elements;
-    }
-
-    private static class Enemy extends GameObject {
-
-
-/*
-        private double getRandomSize(double maxSize){
-            double size = maxSize * Math.random();
-            if (size < MIN_ENEMY_SIZE) size = MIN_ENEMY_SIZE;
-            return size;
-        }
-*/
-
-        private Shape preparePolyAsteroid(double size, int vertexCount){
-            double sizeCopy = size * 10;
-            Polygon polygon = new Polygon();
-            polygon.getPoints().addAll(new Double[]{-0.30d*sizeCopy, -0.10d*sizeCopy, 0d, 0d, -0.30d*sizeCopy,
-                    0.10d*sizeCopy, -0.20d*sizeCopy, -0.10d*sizeCopy});
-            //polygon.getPoints().addAll(generateRandomPolygon((double)size, vertexCount));
-            polygon.setFill(Color.DARKGOLDENROD);
-            return polygon;
-        }
-
-        private Shape prepareCircleAsteroid(double size) {
-            return  new Circle(0, 0, size, Color.DARKGOLDENROD);
-        }
-
-
-        private Shape prepareRectangleAsteroid(double size) {
-            return  new Rectangle( size, size, Color.DARKGOLDENROD);
-        }
-
-        Enemy(int size) {
-            super();
-            setGameObjectSize(size);
-            Shape shape = prepareCircleAsteroid(size);
-            super.setView(shape);
-
-/*
-            double random = Math.random();
-            if (random < 0.3d) {
-                Shape shape = preparePolyAsteroid(size ,5);
-                super.setView(shape);
-            }
-            else if (random < 0.6d) {
-                Shape shape = prepareCircleAsteroid(size);
-                super.setView(shape);
-            }
-            else if (random < 0.9d) {
-                Shape shape = prepareRectangleAsteroid(size);
-                super.setView(shape);
-
-            }
-            else {
-                Shape shape = preparePolyAsteroid(size ,8);
-                super.setView(shape);
-
-            }
-*/
-        }
-
-    }
-
-    private static class Bullet extends GameObject {
-        Bullet() {
-            super(new Circle(5, 5, 5, Color.CADETBLUE));
-        }
-    }
-
-
     /**
      * Conditionally shoots a bullet, i.e. creates a bullet with correct velocity if
      * there are conditions the shot should be made
@@ -473,7 +372,7 @@ public class AsterDroidsApp extends Application {
 
         if ((lastBulletTimeMS + BULLETS_INTERVAL) < System.currentTimeMillis()) {
             lastBulletTimeMS = System.currentTimeMillis();
-            Bullet bullet = new Bullet();
+            BulletObject bullet = new BulletObject();
             bullet.setMaxVelocityMagnitude(8);
             bullet.setVelocity(player.getOrientation().normalize().multiply(7));
             addBullet(bullet, player.getView().getTranslateX(), player.getView().getTranslateY());
