@@ -353,6 +353,7 @@ public class AsterDroidsApp extends Application {
 
             if (checkIfKeyPressed(KeyCode.UP)) {
                 player.accelerate();
+                sound.playThrust();
             }
 
             if (checkIfKeyPressed(KeyCode.SPACE)) {

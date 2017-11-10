@@ -157,6 +157,7 @@ public class GameObject {
 
         //setVelocity(new Point2D(Math.cos(Math.toRadians(getRotate())), Math.sin(Math.toRadians(getRotate()))));
         setVelocity(new Point2D(xVelocity,yVelocity));
+
     }
 
     public boolean isColliding(GameObject other) {

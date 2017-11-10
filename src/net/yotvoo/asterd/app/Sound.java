@@ -8,6 +8,7 @@ import java.net.URL;
 
 public class Sound {
 
+    private Media soundThrust;
     //private MediaPlayer mediaPlayerShooting;
     private Media soundShooting;
     private Media soundAsteroidExplosion;
@@ -36,7 +37,7 @@ public class Sound {
             soundShooting = new Media(getClass().getResource("laser_gun.mp3").toURI().toString());
             soundAsteroidExplosion = new Media(getClass().getResource("boom_bang.mp3").toURI().toString());
             soundPlayerCrash = new Media(getClass().getResource("boom_grenade.mp3").toURI().toString());
-
+            soundThrust = new Media(getClass().getResource("rocket-thrust-short.wav").toURI().toString());
 
 //            musicFile = pathToSounds + "laser_gun.mp3";     // For example
 //            soundShooting = new Media(new File(musicFile).toURI().toString());
@@ -55,8 +56,6 @@ public class Sound {
             AsterDroidsApp.log("Exception: " + e.toString());
         }
 
-
-
     }
 
     private void play(Media media){
@@ -67,7 +66,14 @@ public class Sound {
         }
     };
 
+    public void playThrust(){
+
+        play(soundThrust);
+    }
+
+
     public void playPlayerCrash(){
+
         play(soundPlayerCrash);
     }
 
