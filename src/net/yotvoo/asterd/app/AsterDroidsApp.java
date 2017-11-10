@@ -7,7 +7,9 @@ import javafx.stage.Stage;
 
 
 /**
- * @author
+ * @author Jarosław Wachowicz
+ * Simple game based on classic Asteroids game
+ * Made for fun ale learning purposes
  */
 public class AsterDroidsApp extends Application {
 
@@ -29,7 +31,6 @@ public class AsterDroidsApp extends Application {
         gameView = new GameView(stage);
         controll = new Controll(gameView);
         gameLogic = new GameLogic(gameView, controll, sound);
-
     }
 
     public static void main(String[] args) {

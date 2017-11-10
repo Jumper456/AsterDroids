@@ -1,5 +1,7 @@
 package net.yotvoo.asterd.app;
 
+
+import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -8,7 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Shape;
-import javafx.stage.Stage;
+
 
 /**
  * GameView maintains visual elements of the game application
@@ -17,10 +19,6 @@ import javafx.stage.Stage;
 public class GameView {
 
     private Pane root;
-    public Scene getScene() {
-        return scene;
-    }
-
     private Stage stage;
     private Scene scene;
     private Label gameScoreLabel;
@@ -138,6 +136,10 @@ public class GameView {
 
     public double getHeight() {
         return root.getHeight();
+    }
+
+    public Scene getScene() {
+        return scene;
     }
 
 }
