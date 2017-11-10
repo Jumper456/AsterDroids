@@ -66,7 +66,7 @@ public class GameLogic {
 
             //controll screen actions/ out of the game
             if (controll.checkIfKeyPressed(KeyCode.F5)) {
-                newGame();;
+                newGame();
             }
         }
         else {

@@ -3,71 +3,62 @@ package net.yotvoo.asterd.app;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Shape;
 
-/**
- * @author
- */
-
 public class GameObject {
-
-    final Double ACCELERATION = 0.1d;
-    private final double ROTATE_STEP = 3d;
-
     private Shape view;
     private Point2D velocity = new Point2D(0, 0);
-    //private Point2D orientation = new Point2D(0,0);
-    private Long ageStart;
-    private final Long MAX_BULLET_AGE = 1000L; // 1 sek
-    private double maxVelocityMagnitude = 6;
+    private long ageStart;
+    private double maxVelocityMagnitude = 6d;
+    private boolean alive = true;
+    //current size (loosly corresponding to shape size), it is about how many times it can split
+    private int gameObjectSize;
 
-    private int gameObjectSize; //current size (loosly corresponding to shape size), it is about how many times it can split
-
-    public int getGameObjectSize() {
-        return gameObjectSize;
-    }
-
-    public void setGameObjectSize(int size) {
-        this.gameObjectSize = size;
-    }
-
-
-    public double getMaxVelocityMagnitude() {
-        return maxVelocityMagnitude;
-    }
 
     public void setMaxVelocityMagnitude(double maxVelocityMagnitude) {
         this.maxVelocityMagnitude = maxVelocityMagnitude;
     }
 
+    public int getGameObjectSize() {
+        return gameObjectSize;
+    }
+
+    public void setGameObjectSize(int sizeParam) {
+        this.gameObjectSize = sizeParam;
+    }
+
+/*
+    public double getMaxVelocityMagnitude() {
+        return maxVelocityMagnitude;
+    }
+*/
+
     /**
      * @return object age in ms
      */
-    public Long getAge() {
+    public long getAge() {
         return System.currentTimeMillis() - ageStart;
     }
 
+/*
     public void resetAge() {
         this.ageStart = System.currentTimeMillis();
     }
+*/
 
+/*
     public boolean isOlderThen(Long age){
         return ( getAge() > age );
     }
+*/
 
     public boolean isTooOld(){
-        return ( getAge() > MAX_BULLET_AGE);
-    };
+        return ( getAge() > Constants.MAX_BULLET_AGE);
+    }
 
 
     public Point2D getOrientation() {
         return new Point2D(Math.cos(Math.toRadians(getRotate())), Math.sin(Math.toRadians(getRotate())));
     }
-/*
-    public void setOrientation(Point2D orientation) {
-        this.orientation = orientation;
-    }
-*/
 
-    private boolean alive = true;
 
     public GameObject(Shape view) {
         this.view = view;
@@ -83,10 +74,10 @@ public class GameObject {
         view.setTranslateY(view.getTranslateY() + velocity.getY());
 
         //TODO change the bounds to the pane with and height, to accomodate field size changes
-        if (view.getTranslateX()<0){ view.setTranslateX(1200);};
-        if (view.getTranslateY()<0){ view.setTranslateY(800);};
-        if (view.getTranslateX()>1200){ view.setTranslateX(0);};
-        if (view.getTranslateY()>800){ view.setTranslateY(0);};
+        if (view.getTranslateX()<0){ view.setTranslateX(1200);}
+        if (view.getTranslateY()<0){ view.setTranslateY(800);}
+        if (view.getTranslateX()>1200){ view.setTranslateX(0);}
+        if (view.getTranslateY()>800){ view.setTranslateY(0);}
     }
 
     private double vectorMagnitude(Point2D vector){
@@ -135,12 +126,12 @@ public class GameObject {
     }
 
     public void rotateRight() {
-        view.setRotate(view.getRotate() + ROTATE_STEP);
+        view.setRotate(view.getRotate() + Constants.ROTATE_STEP);
         //setVelocity(new Point2D(Math.cos(Math.toRadians(getRotate())), Math.sin(Math.toRadians(getRotate()))));
     }
 
     public void rotateLeft() {
-        view.setRotate(view.getRotate() - ROTATE_STEP);
+        view.setRotate(view.getRotate() - Constants.ROTATE_STEP);
         //setVelocity(new Point2D(Math.cos(Math.toRadians(getRotate())), Math.sin(Math.toRadians(getRotate()))));
     }
 
@@ -152,8 +143,8 @@ public class GameObject {
         xVelocity = this.getVelocity().getX();
         yVelocity = this.getVelocity().getY();
 
-        xVelocity = xVelocity + Math.cos(Math.toRadians(getRotate()))*ACCELERATION;
-        yVelocity = yVelocity + Math.sin(Math.toRadians(getRotate()))*ACCELERATION;
+        xVelocity = xVelocity + Math.cos(Math.toRadians(getRotate()))*Constants.ACCELERATION;
+        yVelocity = yVelocity + Math.sin(Math.toRadians(getRotate()))*Constants.ACCELERATION;
 
         //setVelocity(new Point2D(Math.cos(Math.toRadians(getRotate())), Math.sin(Math.toRadians(getRotate()))));
         setVelocity(new Point2D(xVelocity,yVelocity));

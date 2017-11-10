@@ -14,9 +14,9 @@ public class PlayerObject extends GameObject {
             ship.setArcHeight(10);
 */
         Polygon ship = new Polygon();
-        ship.getPoints().addAll(new Double[]{-30d,-10d,
+        ship.getPoints().addAll(-30d,-10d,
                 0d,0d,
-                -30d,10d});
+                -30d,10d);
 
         ship.setFill(Color.BLUEVIOLET);
         super.setView(ship);

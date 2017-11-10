@@ -165,7 +165,7 @@ public class GameFieldModel {
                 AsterDroidsApp.log("Spawned enemy with velocity " + enemy.getVelocity().toString());
             }
         }
-    };
+    }
 
     void spawnEnemy(){
         try {

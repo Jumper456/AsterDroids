@@ -9,7 +9,6 @@ import javafx.scene.shape.Shape;
 
 public class EnemyObject extends GameObject {
 
-
 /*
         private double getRandomSize(double maxSize){
             double size = maxSize * Math.random();
@@ -34,8 +33,8 @@ public class EnemyObject extends GameObject {
     private Shape preparePolyAsteroid(double size, int vertexCount){
         double sizeCopy = size * 10;
         Polygon polygon = new Polygon();
-        polygon.getPoints().addAll(new Double[]{-0.30d*sizeCopy, -0.10d*sizeCopy, 0d, 0d, -0.30d*sizeCopy,
-                0.10d*sizeCopy, -0.20d*sizeCopy, -0.10d*sizeCopy});
+        polygon.getPoints().addAll(-0.30d*sizeCopy, -0.10d*sizeCopy, 0d, 0d, -0.30d*sizeCopy,
+                0.10d*sizeCopy, -0.20d*sizeCopy, -0.10d*sizeCopy);
         //polygon.getPoints().addAll(generateRandomPolygon((double)size, vertexCount));
         polygon.setFill(Color.DARKGOLDENROD);
         return polygon;

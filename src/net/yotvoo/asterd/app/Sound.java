@@ -64,7 +64,7 @@ public class Sound {
             MediaPlayer mediaPlayer = new MediaPlayer(media);
             mediaPlayer.play();
         }
-    };
+    }
 
     public void playThrust(){
 
@@ -80,7 +80,7 @@ public class Sound {
     public void playAsteroidExplosion(){
 
         play(soundAsteroidExplosion);
-    };
+    }
 
     public void playShooting(){
 

@@ -1,10 +1,7 @@
 package net.yotvoo.asterd.app;
 
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-
 
 /**
  * @author Jarosław Wachowicz
@@ -18,15 +15,12 @@ public class AsterDroidsApp extends Application {
     private Controll controll;
     private Sound sound;
 
-
     public static void log(String string){
         System.out.println(string);
-    };
-
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
-
         sound = new Sound();
         gameView = new GameView(stage);
         controll = new Controll(gameView);
