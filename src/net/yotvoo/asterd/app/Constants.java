@@ -20,4 +20,5 @@ class Constants {
 
     static final int MAX_BULLET_AGE = 1000; // 1 sek
 
+    static final String HIGH_SCORE_FILE_NAME = "AsterDroids.score";
 }

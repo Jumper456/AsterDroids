@@ -2,6 +2,7 @@ package net.yotvoo.asterd.app;
 
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.KeyCode;
+import net.yotvoo.lib.persist.SimplePersistance;
 
 
 /**
@@ -13,6 +14,7 @@ class GameLogic {
     private final Sound sound;
     private final Control control;
     private final GameFieldModel gameFieldModel;
+    private final SimplePersistance simplePersistance;
 
     private boolean isGameActive;
 
@@ -26,6 +28,9 @@ class GameLogic {
         this.control = control;
         isGameActive = false;
         gameFieldModel = new GameFieldModel(gameView, sound);
+        simplePersistance = new SimplePersistance(Constants.HIGH_SCORE_FILE_NAME);
+        gameHiScore = simplePersistance.loadSimpleHighScore();
+        gameView.updateHiScore(gameHiScore);
 
         AnimationTimer timer = new AnimationTimer() {
             @Override
@@ -40,6 +45,7 @@ class GameLogic {
     private void setHiScore() {
         if (gameScore > gameHiScore) gameHiScore = gameScore;
         gameView.updateHiScore(gameHiScore);
+        simplePersistance.saveSimpleHighScore(gameHiScore);
     }
 
 
