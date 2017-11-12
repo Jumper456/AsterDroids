@@ -1,6 +1,7 @@
 package net.yotvoo.asterd.app;
 
 import javafx.animation.AnimationTimer;
+import javafx.application.Application;
 import javafx.scene.input.KeyCode;
 import net.yotvoo.lib.network.ConnectionSettings;
 import net.yotvoo.lib.network.SimpleConnection;
@@ -17,6 +18,8 @@ class GameLogic {
     private final Control control;
     private final GameFieldModel gameFieldModel;
     private final SimpleConnection simpConn;
+    private final AnimationTimer timer;
+
     //private final SimplePersistance simplePersistance;
 
     private boolean isGameActive;
@@ -56,7 +59,7 @@ class GameLogic {
         connSett = SimplePersistance.loadConnectionSettingsSingle(Constants.SIMPLE_CONNECTION_FILE_NAME);
         simpConn = new SimpleConnection(connSett);
 
-        AnimationTimer timer = new AnimationTimer() {
+        timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 onUpdate();
@@ -99,6 +102,13 @@ class GameLogic {
             if (control.checkIfKeyPressed(KeyCode.F5)) {
                 newGame();
             }
+
+            if (control.checkIfKeyPressed(KeyCode.F11)) {
+                timer.stop();
+                changeNetworkSettings();
+                timer.start();
+            }
+
         }
         else {
 
@@ -119,7 +129,14 @@ class GameLogic {
             if (control.checkIfKeyPressed(KeyCode.SPACE)) {
                 gameFieldModel.shootABullet();
             }
+
+
         }
+    }
+
+    private void changeNetworkSettings() {
+        //ConnectionForm.showConnectionDialog();
+        ConnectionForm.showConnectionStage();
     }
 
     private void onUpdate() {
