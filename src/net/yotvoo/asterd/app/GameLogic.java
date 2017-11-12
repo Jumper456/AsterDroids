@@ -1,7 +1,6 @@
 package net.yotvoo.asterd.app;
 
 import javafx.animation.AnimationTimer;
-import javafx.application.Application;
 import javafx.scene.input.KeyCode;
 import net.yotvoo.lib.network.ConnectionSettings;
 import net.yotvoo.lib.network.SimpleConnection;
@@ -17,9 +16,13 @@ class GameLogic {
     private final Sound sound;
     private final Control control;
     private final GameFieldModel gameFieldModel;
-    private final SimpleConnection simpConn;
+    private final SimpleConnection simpleConnection;
     private final AnimationTimer timer;
+    private ConnectionSettings connectionSettings;
 
+    public ConnectionSettings getConnectionSettings() {
+        return connectionSettings;
+    }
     //private final SimplePersistance simplePersistance;
 
     private boolean isGameActive;
@@ -42,22 +45,28 @@ class GameLogic {
         gameView.updateHiScore(gameHiScore);
 
 
-        ConnectionSettings connSett;
-        //TODO remove test stuff (writing dummy connection data to the file)
-        connSett = new ConnectionSettings(1,
-                "Połączenie testowe.",
+
+/*
+
+        connectionSettings = new ConnectionSettings(1,
+                "Połączenie testowe",
                 "localhost",
                 "55555",
                 "jarek",
                 "trzaslo",
                 "takie sobie połączenie dla testu.");
-        SimplePersistance.saveConnectionSettingsSingle(Constants.SIMPLE_CONNECTION_FILE_NAME, connSett);
-        connSett = null;
-        //END TODO
+        SimplePersistance.saveConnectionSettingsSingle(Constants.SIMPLE_CONNECTION_FILE_NAME, connectionSettings);
+*/
+
 
         //Initialize network connection stuff
-        connSett = SimplePersistance.loadConnectionSettingsSingle(Constants.SIMPLE_CONNECTION_FILE_NAME);
-        simpConn = new SimpleConnection(connSett);
+        connectionSettings = SimplePersistance.loadConnectionSettingsSingle(Constants.SIMPLE_CONNECTION_FILE_NAME);
+        if (connectionSettings != null)
+            System.out.println("Connection settings loaded: " + connectionSettings.toString());
+        else
+            System.out.println("Connection settings not loaded: ");
+
+        simpleConnection = new SimpleConnection(connectionSettings);
 
         timer = new AnimationTimer() {
             @Override
@@ -96,23 +105,22 @@ class GameLogic {
     private void checkCommands() {
         //check in the bitset which keys are pressed and do the action
 
-        if (!isGameActive()){
 
+        if (!isGameActive()){
             //control screen actions/ out of the game
             if (control.checkIfKeyPressed(KeyCode.F5)) {
                 newGame();
             }
-
-            if (control.checkIfKeyPressed(KeyCode.F11)) {
-                timer.stop();
-                changeNetworkSettings();
-                timer.start();
+            if (control.checkIfKeyPressed(KeyCode.ESCAPE)) {
+                gameExit();
             }
-
         }
         else {
-
             //during the game actions
+            if (control.checkIfKeyPressed(KeyCode.ESCAPE)) {
+                gameOver();
+            }
+
             if (control.checkIfKeyPressed(KeyCode.LEFT)) {
                 gameFieldModel.rotatePlayer(GameFieldModel.ROTATE_LEFT);
             }
@@ -129,14 +137,21 @@ class GameLogic {
             if (control.checkIfKeyPressed(KeyCode.SPACE)) {
                 gameFieldModel.shootABullet();
             }
-
-
         }
     }
 
-    private void changeNetworkSettings() {
-        //ConnectionForm.showConnectionDialog();
-        ConnectionForm.showConnectionStage();
+    private void gameExit() {
+        gameView.closeAndExit();
+    }
+
+    public void changeNetworkSettings() {
+        System.out.println("changeNetworkSettings has been called");
+        System.out.println("changeNetworkSettings: " + connectionSettings.toString());
+        NetworkSettingsForm networkSettingsForm = new NetworkSettingsForm(connectionSettings);
+        networkSettingsForm.showAndWait();
+        if (connectionSettings != null) {
+            SimplePersistance.saveConnectionSettingsSingle(Constants.SIMPLE_CONNECTION_FILE_NAME, connectionSettings);
+        }
     }
 
     private void onUpdate() {

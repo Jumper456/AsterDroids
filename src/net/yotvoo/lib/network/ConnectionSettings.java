@@ -11,6 +11,9 @@ public class ConnectionSettings implements Serializable {
     private String userPassword;
     private String notes;
 
+    public ConnectionSettings() {
+    }
+
     public ConnectionSettings(int id, String name, String address, String port, String userName, String userPassword, String notes) {
         this.id = id;
         this.name = name;
@@ -32,5 +35,61 @@ public class ConnectionSettings implements Serializable {
                 ", userPassword='" + userPassword + '\'' +
                 ", notes='" + notes + '\'' +
                 '}';
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserPassword() {
+        return userPassword;
+    }
+
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

@@ -1,6 +1,9 @@
 package net.yotvoo.asterd.app;
 
 class Constants {
+    static final double PREFERED_GAME_SCENE_WIDTH = 1200d;
+    static final double PREFERED_GAME_SCENE_HEIGHT = 800d;
+
     static final double MAX_ENEMY_SIZE = 20d;
     static final double MIN_ENEMY_SIZE = 5d;
     static final double MAX_ENEMY_SPEED = 3d;

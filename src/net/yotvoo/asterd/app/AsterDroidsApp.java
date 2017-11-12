@@ -21,6 +21,7 @@ public class AsterDroidsApp extends Application {
         GameView gameView = new GameView(stage);
         Control control = new Control(gameView);
         gameLogic = new GameLogic(gameView, control, sound);
+        gameView.setGameLogic(gameLogic);
     }
 
     public static void main(String[] args) {

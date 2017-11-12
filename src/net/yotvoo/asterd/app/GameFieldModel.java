@@ -145,7 +145,7 @@ class GameFieldModel {
         boolean isDestroyed = false;
         for (GameObject enemy : enemies) {
             if (enemy.isColliding(player)) {
-                AsterDroidsApp.log("Killed with enemy velocity " + enemy.getVelocity().toString());
+                AsterDroidsApp.log("Killed with enemy. Enemy velocity " + enemy.getVelocity().toString());
                 isDestroyed = true;
                 break;
             }
