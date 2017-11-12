@@ -146,9 +146,11 @@ class GameLogic {
 
     public void changeNetworkSettings() {
         System.out.println("changeNetworkSettings has been called");
-        System.out.println("changeNetworkSettings: " + connectionSettings.toString());
+        if (connectionSettings != null) {
+            System.out.println("changeNetworkSettings: " + connectionSettings.toString());
+        }
         NetworkSettingsForm networkSettingsForm = new NetworkSettingsForm(connectionSettings);
-        networkSettingsForm.showAndWait();
+        connectionSettings = networkSettingsForm.showAndWait();
         if (connectionSettings != null) {
             SimplePersistance.saveConnectionSettingsSingle(Constants.SIMPLE_CONNECTION_FILE_NAME, connectionSettings);
         }
