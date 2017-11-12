@@ -2,6 +2,8 @@ package net.yotvoo.asterd.app;
 
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.KeyCode;
+import net.yotvoo.lib.network.ConnectionSettings;
+import net.yotvoo.lib.network.SimpleConnection;
 import net.yotvoo.lib.persist.SimplePersistance;
 
 
@@ -14,7 +16,8 @@ class GameLogic {
     private final Sound sound;
     private final Control control;
     private final GameFieldModel gameFieldModel;
-    private final SimplePersistance simplePersistance;
+    private final SimpleConnection simpConn;
+    //private final SimplePersistance simplePersistance;
 
     private boolean isGameActive;
 
@@ -28,9 +31,30 @@ class GameLogic {
         this.control = control;
         isGameActive = false;
         gameFieldModel = new GameFieldModel(gameView, sound);
-        simplePersistance = new SimplePersistance(Constants.HIGH_SCORE_FILE_NAME);
-        gameHiScore = simplePersistance.loadSimpleHighScore();
+
+        //Manage highscore persistance
+        //simplePersistance = new SimplePersistance(Constants.HIGH_SCORE_FILE_NAME);
+        //gameHiScore = simplePersistance.loadSimpleHighScore();
+        gameHiScore = SimplePersistance.loadSimpleHighScore(Constants.HIGH_SCORE_FILE_NAME);
         gameView.updateHiScore(gameHiScore);
+
+
+        ConnectionSettings connSett;
+        //TODO remove test stuff (writing dummy connection data to the file)
+        connSett = new ConnectionSettings(1,
+                "Połączenie testowe.",
+                "localhost",
+                "55555",
+                "jarek",
+                "trzaslo",
+                "takie sobie połączenie dla testu.");
+        SimplePersistance.saveConnectionSettingsSingle(Constants.SIMPLE_CONNECTION_FILE_NAME, connSett);
+        connSett = null;
+        //END TODO
+
+        //Initialize network connection stuff
+        connSett = SimplePersistance.loadConnectionSettingsSingle(Constants.SIMPLE_CONNECTION_FILE_NAME);
+        simpConn = new SimpleConnection(connSett);
 
         AnimationTimer timer = new AnimationTimer() {
             @Override
@@ -45,7 +69,8 @@ class GameLogic {
     private void setHiScore() {
         if (gameScore > gameHiScore) gameHiScore = gameScore;
         gameView.updateHiScore(gameHiScore);
-        simplePersistance.saveSimpleHighScore(gameHiScore);
+        //simplePersistance.saveSimpleHighScore(gameHiScore);
+        SimplePersistance.saveSimpleHighScore(Constants.HIGH_SCORE_FILE_NAME, gameHiScore);
     }
 
 
