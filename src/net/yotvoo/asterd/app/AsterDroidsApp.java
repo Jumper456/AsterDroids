@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 /**
  * @author Jarosław Wachowicz
  * Simple game based on classic Asteroids game
- * Made for fun ale learning purposes
+ * Made for fun and learning purposes
  */
 @SuppressWarnings({"FieldCanBeLocal", "unused"})
 public class AsterDroidsApp extends Application {
